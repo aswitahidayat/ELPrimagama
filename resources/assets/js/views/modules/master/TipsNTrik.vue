@@ -19,11 +19,11 @@
             <tbody>
               <tr v-for="(task, index) in list.data" :key="index">
                 <td>{{ index + list.pagination.from }}</td>
-                <td>{{ task.file }}</td>
+                <td>{{ task.nmfile }}</td>
                 <td>{{ task.keterangan }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary" @click="popUpEditMititi(task.id)"><i class="fa fa-edit"></i></button>
-                  <button @click="deleteMititi(task.id)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                  <button type="button" class="btn btn-primary" @click="popUpEditMititi(task.RecID)"><i class="fa fa-edit"></i></button>
+                  <button @click="deleteMititi(task.RecID)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -47,7 +47,7 @@
       </div>
     </div><!--/.col-->
     
-    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editMititi(dataForm.id)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editMititi(dataForm.RecID)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header">
         <h4 class="modal-title">{{ dataForm.id ? "Edit Data" : "Tambah Data" }}</h4>
       </div>
@@ -55,7 +55,7 @@
         <div class="card-block">
           <div class="form-group">
             <label for="company">File</label>
-            <input type="text" class="form-control" v-model="dataForm.file" value="{ dataForm.file }" placeholder="Masukan Nama File">
+            <input type="text" class="form-control" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
           </div>
 
           <div class="form-group">
@@ -84,7 +84,7 @@
           list: [],
           dataForm: {
             id: '',
-            file: '',
+            nmfile: '',
             keterangan: ''
           },
           pagination: {

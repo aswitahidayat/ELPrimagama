@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SmartEbook extends Model
 {
+    public $timestamps = false;
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+     protected $table = 'dbo.smartbook';
+    
     /**
      * The attributes that are mass assignable.
      *

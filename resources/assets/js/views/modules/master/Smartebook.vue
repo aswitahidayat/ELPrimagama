@@ -22,7 +22,7 @@
             <tbody>
               <tr v-for="(task, index) in list.data" :key="index">
                 <td>{{ index + list.pagination.from }}</td>
-                <td>{{ task.nama }}</td>
+                <td>{{ task.nmfile }}</td>
                 <td>{{ task.keterangan }}</td>
                 <td>{{ task.jenjang1data.NamaJenjang }}</td>
                 <td>{{ task.jenjang2data.NamaJenjang }}</td>

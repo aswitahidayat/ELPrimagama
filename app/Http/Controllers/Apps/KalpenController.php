@@ -15,8 +15,7 @@ class KalpenController extends Controller
      */
     public function index()
     {
-        $results = Kalpen::where('deleted', 0)
-                ->orderBy('id', 'asc')
+        $results = Kalpen::orderBy('RecID', 'asc')
                 ->paginate(10);
 
         $response = [
@@ -73,8 +72,7 @@ class KalpenController extends Controller
      */
     public function show($id)
     {
-        return Kalpen::where('deleted', 0)
-            ->where('id', $id)
+        return Kalpen::where('RecID', $id)
             ->first();
     }
 
@@ -104,8 +102,7 @@ class KalpenController extends Controller
             'tanggal' => 'required'
         ]);
 
-        return Kalpen::where('deleted', 0)
-            ->where('id', $id)
+        return Kalpen::where('RecID', $id)
             ->update([
                 'judul' => $request->judul,
                 'keterangan' => $request->keterangan,
@@ -121,8 +118,6 @@ class KalpenController extends Controller
      */
     public function destroy($id)
     {
-        return Kalpen::where('deleted', 0)
-            ->where('id', $id)
-            ->update(['deleted' => 1]);
+        return Kalpen::where('RecID', $id)->delete();
     }
 }

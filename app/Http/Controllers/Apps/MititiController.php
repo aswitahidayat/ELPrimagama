@@ -15,8 +15,7 @@ class MititiController extends Controller
      */
     public function index()
     {        
-        $results = Mititi::where('deleted', 0)
-                ->orderBy('id', 'asc')
+        $results = Mititi::orderBy('RecID', 'asc')
                 ->paginate(10);
         $response = [
             'pagination' => [
@@ -52,12 +51,12 @@ class MititiController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'file' => 'required|max:500',
+            'nmfile' => 'required|max:500',
             'keterangan' => 'required|max:500'
         ]);
 
         return Mititi::create([ 
-            'file' => $request->file,
+            'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan
         ]);
     }
@@ -70,8 +69,7 @@ class MititiController extends Controller
      */
     public function show($id)
     {
-        return Mititi::where('deleted', 0)
-                ->where('id', $id)
+        return Mititi::where('RecID', $id)
                 ->first();
     }
 
@@ -96,14 +94,14 @@ class MititiController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'file' => 'required|max:500',
+            'nmfile' => 'required|max:500',
             'keterangan' => 'required|max:500'
         ]);
 
         return Mititi::where('deleted', 0)
         ->where('id', $id)
         ->update([
-            'file' => $request->file,
+            'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan
         ]);
     }
@@ -116,9 +114,6 @@ class MititiController extends Controller
      */
     public function destroy($id)
     {
-        return Mititi::where('deleted', 0)
-                ->where('id', $id)
-                ->update(['deleted' => 1]);
-                
+        return Mititi::where('RecID', $id)->delete();
     }
 }

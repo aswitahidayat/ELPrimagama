@@ -24,8 +24,8 @@
                 <td>{{ task.keterangan }}</td>
                 <td>{{ task.tanggal }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary" @click="popUpEditKalpen(task.id)"><i class="fa fa-edit"></i></button>
-                  <button @click="deleteKalpen(task.id)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                  <button type="button" class="btn btn-primary" @click="popUpEditKalpen(task.RecID)"><i class="fa fa-edit"></i></button>
+                  <button @click="deleteKalpen(task.RecID)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -49,9 +49,9 @@
       </div>
     </div><!--/.col-->
     
-    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editKalpen(dataForm.id)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editKalpen(dataForm.RecID)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header">
-        <h4 class="modal-title">{{ dataForm.id ? "Edit Data" : "Tambah Data" }}</h4>
+        <h4 class="modal-title">{{ dataForm.RecID ? "Edit Data" : "Tambah Data" }}</h4>
       </div>
         <div class="card-block">
           <div class="form-group">
@@ -93,7 +93,7 @@
           primaryModal: false,
           list: [],
           dataForm: {
-            id: '',
+            RecID: '',
             judul: '',
             keterangan: '',
             tanggal: ''
@@ -131,8 +131,8 @@
               .catch((err) => console.error(err));
             },
             
-            popUpEditKalpen(id){
-              axios.get('api/kalpen/' + id)
+            popUpEditKalpen(RecID){
+              axios.get('api/kalpen/' + RecID)
                 .then((res) => {
                   this.primaryModal = true;
                   this.dataForm = res.data;
@@ -140,9 +140,9 @@
                 .catch((err) => console.error(err));
             },
 
-            editKalpen(id) {
-              if(id && id !== ""){
-                 axios.put('api/kalpen/' + id, this.dataForm)
+            editKalpen(RecID) {
+              if(RecID && RecID !== ""){
+                 axios.put('api/kalpen/' + RecID, this.dataForm)
                 .then((res) => {
                   this.primaryModal = false;
                   this.dataForm = {};
@@ -160,8 +160,8 @@
               }
             },
 
-            deleteKalpen(id) {
-              axios.delete('api/kalpen/' + id)
+            deleteKalpen(RecID) {
+              axios.delete('api/kalpen/' + RecID)
                 .then((res) => {
                   this.fetchKalpenList()
                 })

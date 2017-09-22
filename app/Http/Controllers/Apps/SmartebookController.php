@@ -15,8 +15,7 @@ class SmartebookController extends Controller
      */
     public function index()
     {
-        $results = Smartebook::where('deleted', 0)
-            ->orderBy('id', 'asc')
+        $results = Smartebook::orderBy('idsb', 'asc')
             ->paginate(10);
 
         $response = [
