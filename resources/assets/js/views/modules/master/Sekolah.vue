@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> Pikse Table
+          <i class="fa fa-align-justify"></i> Smart Ebook Table
         </div>
         <div class="card-block">
           <div class="row">
@@ -13,7 +13,7 @@
             <div class="col-sm-9">
               <div class="input-group">
                 <input type="text" id="username2" name="username2" v-model="keyword" placeholder="Cari" class="form-control">
-                <button @click="fetchPikseList()" class="input-group-addon"><i class="fa fa-search"></i></button>
+                <button @click="fetchSekolahList()" class="input-group-addon"><i class="fa fa-search"></i></button>
               </div>
             </div>
           </div>
@@ -22,25 +22,21 @@
             <thead>
               <tr>
                 <th>No</th>
-                <th>Nama</th>
-                <th>Keterangan</th>
-                <th>Jenjang 1</th>
-                <th>Jenjang 2</th>
-                <th>Kurikulum</th>
+                <th>Asal Sekolah</th>
+                <th>Provinsi</th>
+                <th>Kota / Kab</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(task, index) in list.data" :key="index">
                 <td>{{ index + list.pagination.from }}</td>
-                <td>{{ task.nmfile }}</td>
-                <td>{{ task.keterangan }}</td>
-                <td>{{ task.jenjangdata.NamaJenjang }}</td>
-                <td>{{ task.jenjang2data.NamaJenjang }}</td>
-                <td>{{ task.kurikulum }}</td>
+                <td>{{ task.asal_sekolah }}</td>
+                <td>{{ task.propinsiData.NamaPropinsi }}</td>
+                <td>{{ task.kotaData.NamaKotaKab }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary" @click="popUpEditPikse(task.idpikse)"><i class="fa fa-edit"></i></button>
-                  <button @click="popUpDeletePikse(task)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                  <button type="button" class="btn btn-primary" @click="popUpEditSekolah(task.idsb)"><i class="fa fa-edit"></i></button>
+                  <button @click="popUpDeleteSekolah(task)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -49,13 +45,13 @@
           <nav>
             <ul class="pagination">
               <li class="page-item" v-if="pagination.current_page > 1" >
-                <a class="page-link" href="javascript:;" @click="fetchPikseList(pagination.current_page - 1)">Prev</a>
+                <a class="page-link" href="javascript:;" @click="fetchSekolahList(pagination.current_page - 1)">Prev</a>
               </li>
               <li v-for="(page, index) in pagination.last_page" :key="page.index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
-                <a href="javascript:;" @click="fetchPikseList(page)">{{ page }}</a>
+                <a href="javascript:;" @click="fetchSekolahList(page)" v-if="index < pagination.current_page + 5 && index > pagination.current_page - 5">{{ page }}</a>
               </li>
               <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
-                <a class="page-link" href="javascript:;" @click="fetchPikseList(pagination.current_page + 1)">Next</a>
+                <a class="page-link" href="javascript:;" @click="fetchSekolahList(pagination.current_page + 1)">Next</a>
               </li>
             </ul>
           </nav>
@@ -64,52 +60,42 @@
       </div>
     </div><!--/.col-->
     
-    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editPikse(dataForm.idpikse)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editSekolah(dataForm.idsb)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header">
-        <h4 class="modal-title">{{ dataForm.idpikse ? "Edit Data" : "Tambah Data" }}</h4>
+        <h4 class="modal-title">{{ dataForm.idsb ? "Edit Data" : "Tambah Data" }}</h4>
       </div>
 
         <div class="card-block">
           <form>
             <div class="form-group has-error">
-              <label for="company">File</label>
-              <input type="text" id="firstname" name="firstname" class="form-control" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama" required >
+              <label for="company">Asal Sekolah</label>
+              <input type="text" id="firstname" name="firstname" class="form-control" v-model="dataForm.asal_sekolah" value="{ dataForm.asal_sekolah }" placeholder="Asal Sekolah" required >
             </div>
 
             <div class="form-group">
-              <label for="company">Keterangan</label>
-              <input type="text" class="form-control" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
-            </div>
-
-            <div class="form-group">
-              <label for="company">Jenjang 1</label>
-              <select class="form-control" v-model="dataForm.jenjang ">
+              <label for="company">Propinsi</label>
+              <select class="form-control" v-model="dataForm.propinsi" v-on:change="getKota()">
                   <option
-                      v-for="cat in this.listJenjang" 
-                      :key="cat.KodeJenjang"
-                      :value="cat.KodeJenjang"
-                      :selected="cat.index == 0">
-                      {{ cat.index }} {{ cat.KodeJenjang }} {{ cat.NamaJenjang }}
+                      v-for="cat in this.listPropinsi" 
+                      :key="cat.RecID"
+                      :value="cat.RecID"
+                      :selected="cat.index == dataForm.propinsi">
+                      {{ cat.NamaPropinsi }}
                   </option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="company">Jenjang 2</label>
-              <select class="form-control" v-model="dataForm.jenjang2 ">
+              <label for="company">Kota</label>
+              <select class="form-control" v-model="dataForm.kota ">
                   <option
-                      v-for="cat in this.listJenjang" 
-                      :key="cat.KodeJenjang"
-                      :value="cat.KodeJenjang"
+                      v-for="cat in this.listKota" 
+                      :key="cat.RecID"
+                      :value="cat.RecID"
                       :selected="cat.KodeJenjang == dataForm.jenjang2">
-                      {{ cat.NamaJenjang }}
+                      {{ cat.NamaKotaKab }}
                   </option>
               </select>
-            </div>
-
-            <div class="form-group">
-              <label for="company">Kurikulum</label>
-              <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" placeholder="Masukan Kurikulum">
             </div>
           </form>
 
@@ -117,7 +103,7 @@
 
     </modal>
 
-    <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deletePikse(dataForm.idpikse)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteSekolah(dataForm.idsb)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header"><h4 class="modal-title">Delete Data</h4></div>
       <div class="card-block"><div class="form-group"> <label for="company">Apakah kamu yakin? </label></div></div>
     </modal>
@@ -144,12 +130,13 @@
           deleteModal: false,
           list: [],
           dataForm: {
-            idpikse: '',
-            file: '',
-            keterangan: ''
+            RecID: '',
+            propinsi: '',
+            kota: '',
+            asal_sekolah: '',
           },
-          listJenjang: [],
-          listKurikulum: [],
+          listPropinsi: [],
+          listKota: [],
           pagination: {
                 total: 0,
                 per_page: 10,
@@ -161,14 +148,13 @@
       },
         
         created() {
-          this.fetchPikseList();
-          this.getJenjang();
-          this.getKurikulum();
+          this.fetchSekolahList();
+          this.getPropinsi();
         },
         
         methods: {
-          fetchPikseList(page) {
-            axios.get('api/pikse?page=' + page + '&keyword=' + this.keyword)
+          fetchSekolahList(page) {
+            axios.get('api/sekolah?page=' + page + '&keyword=' + this.keyword)
               .then((res) => {
                 this.list = res.data;
                 this.pagination = res.data.pagination;
@@ -176,17 +162,17 @@
               .catch((err) => console.error(err));
             },
           
-          createPikse() {
-            axios.post('api/pikse', this.dataForm)
+          createSekolah() {
+            axios.post('api/sekolah', this.dataForm)
               .then((res) => {
                 this.dataForm = {};
-                this.fetchPikseList();
+                this.fetchSekolahList();
               })
               .catch((err) => console.error(err));
             },
             
-            popUpEditPikse(id){
-              axios.get('api/pikse/' + id)
+            popUpEditSekolah(id){
+              axios.get('api/sekolah/' + id)
                 .then((res) => {
                   this.primaryModal = true;
                   this.dataForm = res.data;
@@ -194,55 +180,53 @@
                 .catch((err) => console.error(err));
             },
 
-            popUpDeletePikse(task){
+            popUpDeleteSekolah(task){
               this.dataForm = task;
               this.deleteModal = true;
             },
 
-            editPikse(id) {
+            editSekolah(id) {
               if(id && id !== ""){
-                 axios.put('api/pikse/' + id, this.dataForm)
+                 axios.put('api/sekolah/' + id, this.dataForm)
                 .then((res) => {
                   this.primaryModal = false;
                   this.dataForm = {};
-                  this.fetchPikseList()
+                  this.fetchSekolahList()
                 })
                 .catch((err) => console.error(err));
               } else {
-                axios.post('api/pikse', this.dataForm)
+                axios.post('api/sekolah', this.dataForm)
                 .then((res) => {
                   this.primaryModal = false;
                   this.dataForm = {};
-                  this.fetchPikseList()
+                  this.fetchSekolahList()
                 })
               .catch((err) => console.error(err));
               }
             },
 
-            deletePikse(id) {
-              axios.delete('api/pikse/' + id)
+            deleteSekolah(id) {
+              axios.delete('api/sekolah/' + id)
                 .then((res) => {
                   this.deleteModal = false;
                   this.dataForm = {};
-                  this.fetchPikseList()
+                  this.fetchSekolahList()
                 })
                 .catch((err) => console.error(err));
             },
 
-            getJenjang(){
-                axios.get('api/jenjang/')
+            getPropinsi(){
+                axios.get('api/propinsi/')
                 .then((res) => {
-                  this.listJenjang = res.data;
-                  console.log(this.listJenjang);
+                  this.listPropinsi = res.data;
                 })
                 .catch((err) => console.error(err));
             },
 
-            getKurikulum(){
-                axios.get('api/kurikulum/')
+            getKota(){
+                axios.get('api/kota?propinsi=' + this.dataForm.propinsi )
                 .then((res) => {
-                  this.listKurikulum = res.data;
-                  console.log(this.listKurikulum);
+                  this.listKota = res.data;
                 })
                 .catch((err) => console.error(err));
             },

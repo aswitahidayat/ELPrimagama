@@ -45,7 +45,18 @@
             <li class="nav-item">
               <router-link :to="'/master/pikse'" class="nav-link" exact><i class="icon-puzzle"></i> Pikse</router-link>
             </li>
-            
+            <li class="nav-item">
+              <router-link :to="'/master/rumus'" class="nav-link" exact><i class="icon-puzzle"></i> Rumus</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link :to="'/master/bakmi'" class="nav-link" exact><i class="icon-puzzle"></i> Pembahasan Materi</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link :to="'/master/ketela'" class="nav-link" exact><i class="icon-puzzle"></i> Video Pembelajaran</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link :to="'/master/sekolah'" class="nav-link" exact><i class="icon-puzzle"></i> Asal Sekolah</router-link>
+            </li>
           </ul>
         </router-link>
 

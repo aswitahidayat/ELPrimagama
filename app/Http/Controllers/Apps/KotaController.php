@@ -9,13 +9,26 @@ use App\Models\Kota;
 class KotaController extends Controller
 {
     /**
+     *
+     * Constructor
+     *
+     */
+     protected $request;
+     
+     public function __construct(Request $request) {
+         $this->request = $request;
+     }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return Kota::orderBy('RecID')->get();
+        $propinsi  = $this->request->input('propinsi');
+        return Kota::where("Propinsi", "LIKE","$propinsi")
+                    ->orderBy('RecID')->get();
     }
 
 }

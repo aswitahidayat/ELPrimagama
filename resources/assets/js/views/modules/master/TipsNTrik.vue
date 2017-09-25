@@ -143,15 +143,6 @@
               })
               .catch((err) => console.error(err));
             },
-          
-          createMititi() {
-            axios.post('api/mititi', this.dataForm)
-              .then((res) => {
-                this.dataForm = {};
-                this.fetchMititiList();
-              })
-              .catch((err) => console.error(err));
-            },
             
             popUpEditMititi(id){
               axios.get('api/mititi/' + id)
@@ -178,7 +169,10 @@
                   this.dataForm = {};
                   this.fetchMititiList()
                 })
-              .catch((err) => console.error(err));
+              .catch((err) => {
+                debugger;
+                console.log("err");
+              }); 
               }
             },
 

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Apps;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Rumus;
+use App\Models\Sekolah;
 
-class RumusController extends Controller
+class SekolahController extends Controller
 {
     /**
      *
@@ -27,8 +27,7 @@ class RumusController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Rumus::where("nmfile", "LIKE","%$keyword%")
-                ->orWhere("keterangan", "LIKE","%$keyword%")
+        $results = Sekolah::where("asal_sekolah", "LIKE","%$keyword%")
                 ->orderBy('RecID', 'asc')
                 ->paginate(10);
         $response = [
@@ -65,12 +64,11 @@ class RumusController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'nmfile' => 'required|max:500',
-            'keterangan' => 'required|max:500'
+            'asal_sekolah' => 'required|max:500'
         ]);
 
-        return Rumus::create([ 
-            'nmfile' => $request->nmfile,
+        return Sekolah::create([ 
+            'asal_sekolah' => $request->asal_sekolah,
             'keterangan' => $request->keterangan
         ]);
     }
@@ -83,7 +81,7 @@ class RumusController extends Controller
      */
     public function show($id)
     {
-        return Rumus::where('RecID', $id)
+        return Sekolah::where('RecID', $id)
                 ->first();
     }
 
@@ -108,14 +106,12 @@ class RumusController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'nmfile' => 'required|max:500',
-            'keterangan' => 'required|max:500'
+            'asal_sekolah' => 'required|max:500'
         ]);
 
-        return Rumus::where('RecID', $id)
+        return Sekolah::where('RecID', $id)
         ->update([
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan
+            'asal_sekolah' => $request->asal_sekolah,
         ]);
     }
 
@@ -127,6 +123,6 @@ class RumusController extends Controller
      */
     public function destroy($id)
     {
-        return Rumus::where('RecID', $id)->delete();
+        return Sekolah::where('RecID', $id)->delete();
     }
 }

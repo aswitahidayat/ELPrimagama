@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Apps;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Rumus;
+use App\Models\Bakmi;
 
-class RumusController extends Controller
+class BakmiController extends Controller
 {
     /**
      *
@@ -27,7 +27,7 @@ class RumusController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Rumus::where("nmfile", "LIKE","%$keyword%")
+        $results = Bakmi::where("nmfile", "LIKE","%$keyword%")
                 ->orWhere("keterangan", "LIKE","%$keyword%")
                 ->orderBy('RecID', 'asc')
                 ->paginate(10);
@@ -69,7 +69,7 @@ class RumusController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Rumus::create([ 
+        return Bakmi::create([ 
             'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan
         ]);
@@ -83,7 +83,7 @@ class RumusController extends Controller
      */
     public function show($id)
     {
-        return Rumus::where('RecID', $id)
+        return Bakmi::where('RecID', $id)
                 ->first();
     }
 
@@ -112,7 +112,7 @@ class RumusController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Rumus::where('RecID', $id)
+        return Bakmi::where('RecID', $id)
         ->update([
             'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan
@@ -127,6 +127,6 @@ class RumusController extends Controller
      */
     public function destroy($id)
     {
-        return Rumus::where('RecID', $id)->delete();
+        return Bakmi::where('RecID', $id)->delete();
     }
 }

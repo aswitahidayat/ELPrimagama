@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Rumus extends Model
+class Bakmi extends Model
 {
     public $timestamps = false;
     /**
@@ -12,7 +12,7 @@ class Rumus extends Model
      *
      * @var string
      */
-     protected $table = 'dbo.m_pulus';
+     protected $table = 'dbo.m_bakmi';
 
     /**
      * The attributes that are mass assignable.

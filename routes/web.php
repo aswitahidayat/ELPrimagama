@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('notification', 'HomeController@notification');
+
 Route::prefix('api')->group(function() {
     Route::resource('mititi', 'Apps\MititiController');
     Route::resource('kalpen', 'Apps\KalpenController');
@@ -25,4 +27,8 @@ Route::prefix('api')->group(function() {
     Route::resource('kurikulum', 'Apps\KurikulumController');
     Route::resource('smartexercise', 'Apps\SmartexerciseController');
     Route::resource('pikse', 'Apps\PikseController');
+    Route::resource('rumus', 'Apps\RumusController');
+    Route::resource('bakmi', 'Apps\BakmiController');
+    Route::resource('ketela', 'Apps\KetelaController');
+    Route::resource('sekolah', 'Apps\SekolahController');
 });

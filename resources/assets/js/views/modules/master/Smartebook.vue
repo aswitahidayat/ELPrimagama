@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> Smartbook Table
+          <i class="fa fa-align-justify"></i> Smart Ebook Table
         </div>
         <div class="card-block">
           <div class="row">
@@ -88,8 +88,8 @@
                       v-for="cat in this.listJenjang" 
                       :key="cat.KodeJenjang"
                       :value="cat.KodeJenjang"
-                      :selected="cat.index == 0">
-                      {{ cat.index }} {{ cat.KodeJenjang }} {{ cat.NamaJenjang }}
+                      :selected="cat.index == dataForm.jenjang">
+                      {{ cat.NamaJenjang }}
                   </option>
               </select>
             </div>
@@ -128,6 +128,7 @@
 <script>
   import modal from 'vue-strap/src/Modal'
   import { input as bsInput, formValidator } from 'vue-strap'
+  import vueToast from 'vue-toast'
     
     export default {
       name: 'modals',
@@ -135,6 +136,7 @@
         modal,
         formValidator,
         bsInput,
+        vueToast,
       },
       data() {
         return {
@@ -182,7 +184,10 @@
                 this.dataForm = {};
                 this.fetchSmartebookList();
               })
-              .catch((err) => console.error(err));
+              .catch((err) => {
+                debugger;
+                console.log("err");
+              });
             },
             
             popUpEditSmartebook(id){
@@ -233,7 +238,6 @@
                 axios.get('api/jenjang/')
                 .then((res) => {
                   this.listJenjang = res.data;
-                  console.log(this.listJenjang);
                 })
                 .catch((err) => console.error(err));
             },
@@ -242,7 +246,6 @@
                 axios.get('api/kurikulum/')
                 .then((res) => {
                   this.listKurikulum = res.data;
-                  console.log(this.listKurikulum);
                 })
                 .catch((err) => console.error(err));
             },

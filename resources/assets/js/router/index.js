@@ -24,6 +24,10 @@ import Banner from '../views/modules/master/Banner';
 import Smartebook from '../views/modules/master/Smartebook';
 import Smartexercise from '../views/modules/master/Smartexercise';
 import Pikse from '../views/modules/master/Pikse';
+import Rumus from '../views/modules/master/Rumus';
+import Bakmi from '../views/modules/master/Bakmi';
+import Ketela from '../views/modules/master/Ketela';
+import Sekolah from '../views/modules/master/Sekolah';
 
 Vue.use(Router);
 
@@ -80,7 +84,27 @@ export default new Router({
               path: 'pikse',
               name: 'Pikse',
               component: Pikse,
-            }
+            },
+            {
+              path: 'rumus',
+              name: 'Rumus',
+              component: Rumus,
+            },
+            {
+              path: 'bakmi',
+              name: 'Pembahasan Materi',
+              component: Bakmi,
+            },
+            {
+              path: 'ketela',
+              name: 'Video Pembelajaran',
+              component: Ketela,
+            },
+            {
+              path: 'sekolah',
+              name: 'Asal Sokolah',
+              component: Sekolah,
+            },
           ]
         }
       ]
