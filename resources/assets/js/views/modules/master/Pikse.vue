@@ -13,7 +13,7 @@
             <div class="col-sm-9">
               <div class="input-group">
                 <input type="text" id="username2" name="username2" v-model="keyword" placeholder="Cari" class="form-control">
-                <button @click="fetchSmartebookList()" class="input-group-addon"><i class="fa fa-search"></i></button>
+                <button @click="fetchPikseList()" class="input-group-addon"><i class="fa fa-search"></i></button>
               </div>
             </div>
           </div>
@@ -39,8 +39,8 @@
                 <td>{{ task.jenjang2data.NamaJenjang }}</td>
                 <td>{{ task.kurikulum }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary" @click="popUpEditSmartebook(task.idsb)"><i class="fa fa-edit"></i></button>
-                  <button @click="popUpDeleteSmartebook(task)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                  <button type="button" class="btn btn-primary" @click="popUpEditPikse(task.idpikse)"><i class="fa fa-edit"></i></button>
+                  <button @click="popUpDeletePikse(task)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -49,13 +49,13 @@
           <nav>
             <ul class="pagination">
               <li class="page-item" v-if="pagination.current_page > 1" >
-                <a class="page-link" href="javascript:;" @click="fetchSmartebookList(pagination.current_page - 1)">Prev</a>
+                <a class="page-link" href="javascript:;" @click="fetchPikseList(pagination.current_page - 1)">Prev</a>
               </li>
               <li v-for="(page, index) in pagination.last_page" :key="page.index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
-                <a href="javascript:;" @click="fetchSmartebookList(page)">{{ page }}</a>
+                <a href="javascript:;" @click="fetchPikseList(page)">{{ page }}</a>
               </li>
               <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
-                <a class="page-link" href="javascript:;" @click="fetchSmartebookList(pagination.current_page + 1)">Next</a>
+                <a class="page-link" href="javascript:;" @click="fetchPikseList(pagination.current_page + 1)">Next</a>
               </li>
             </ul>
           </nav>
@@ -64,9 +64,9 @@
       </div>
     </div><!--/.col-->
     
-    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editSmartebook(dataForm.idsb)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editPikse(dataForm.idpikse)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header">
-        <h4 class="modal-title">{{ dataForm.idsb ? "Edit Data" : "Tambah Data" }}</h4>
+        <h4 class="modal-title">{{ dataForm.idpikse ? "Edit Data" : "Tambah Data" }}</h4>
       </div>
 
         <div class="card-block">
@@ -117,7 +117,7 @@
 
     </modal>
 
-    <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteSmartebook(dataForm.idsb)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deletePikse(dataForm.idpikse)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header"><h4 class="modal-title">Delete Data</h4></div>
       <div class="card-block"><div class="form-group"> <label for="company">Apakah kamu yakin? </label></div></div>
     </modal>
@@ -144,7 +144,7 @@
           deleteModal: false,
           list: [],
           dataForm: {
-            idsb: '',
+            idpikse: '',
             file: '',
             keterangan: ''
           },
@@ -161,14 +161,14 @@
       },
         
         created() {
-          this.fetchSmartebookList();
+          this.fetchPikseList();
           this.getJenjang();
           this.getKurikulum();
         },
         
         methods: {
-          fetchSmartebookList(page) {
-            axios.get('api/smartebook?page=' + page + '&keyword=' + this.keyword)
+          fetchPikseList(page) {
+            axios.get('api/pikse?page=' + page + '&keyword=' + this.keyword)
               .then((res) => {
                 this.list = res.data;
                 this.pagination = res.data.pagination;
@@ -176,17 +176,17 @@
               .catch((err) => console.error(err));
             },
           
-          createSmartebook() {
-            axios.post('api/smartebook', this.dataForm)
+          createPikse() {
+            axios.post('api/pikse', this.dataForm)
               .then((res) => {
                 this.dataForm = {};
-                this.fetchSmartebookList();
+                this.fetchPikseList();
               })
               .catch((err) => console.error(err));
             },
             
-            popUpEditSmartebook(id){
-              axios.get('api/smartebook/' + id)
+            popUpEditPikse(id){
+              axios.get('api/pikse/' + id)
                 .then((res) => {
                   this.primaryModal = true;
                   this.dataForm = res.data;
@@ -194,37 +194,37 @@
                 .catch((err) => console.error(err));
             },
 
-            popUpDeleteSmartebook(task){
+            popUpDeletePikse(task){
               this.dataForm = task;
               this.deleteModal = true;
             },
 
-            editSmartebook(id) {
+            editPikse(id) {
               if(id && id !== ""){
-                 axios.put('api/smartebook/' + id, this.dataForm)
+                 axios.put('api/pikse/' + id, this.dataForm)
                 .then((res) => {
                   this.primaryModal = false;
                   this.dataForm = {};
-                  this.fetchSmartebookList()
+                  this.fetchPikseList()
                 })
                 .catch((err) => console.error(err));
               } else {
-                axios.post('api/smartebook', this.dataForm)
+                axios.post('api/pikse', this.dataForm)
                 .then((res) => {
                   this.primaryModal = false;
                   this.dataForm = {};
-                  this.fetchSmartebookList()
+                  this.fetchPikseList()
                 })
               .catch((err) => console.error(err));
               }
             },
 
-            deleteSmartebook(id) {
-              axios.delete('api/smartebook/' + id)
+            deletePikse(id) {
+              axios.delete('api/pikse/' + id)
                 .then((res) => {
                   this.deleteModal = false;
                   this.dataForm = {};
-                  this.fetchSmartebookList()
+                  this.fetchPikseList()
                 })
                 .catch((err) => console.error(err));
             },

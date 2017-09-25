@@ -13,7 +13,7 @@
             <div class="col-sm-9">
               <div class="input-group">
                 <input type="text" id="username2" name="username2" v-model="keyword" placeholder="Cari" class="form-control">
-                <button @click="fetchSmartebookList()" class="input-group-addon"><i class="fa fa-search"></i></button>
+                <button @click="fetchSmartexerciseList()" class="input-group-addon"><i class="fa fa-search"></i></button>
               </div>
             </div>
           </div>
@@ -39,8 +39,8 @@
                 <td>{{ task.jenjang2data.NamaJenjang }}</td>
                 <td>{{ task.kurikulum }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary" @click="popUpEditSmartebook(task.idsb)"><i class="fa fa-edit"></i></button>
-                  <button @click="popUpDeleteSmartebook(task)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                  <button type="button" class="btn btn-primary" @click="popUpEditSmartexercise(task.idse)"><i class="fa fa-edit"></i></button>
+                  <button @click="popUpDeleteSmartexercise(task)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -49,13 +49,13 @@
           <nav>
             <ul class="pagination">
               <li class="page-item" v-if="pagination.current_page > 1" >
-                <a class="page-link" href="javascript:;" @click="fetchSmartebookList(pagination.current_page - 1)">Prev</a>
+                <a class="page-link" href="javascript:;" @click="fetchSmartexerciseList(pagination.current_page - 1)">Prev</a>
               </li>
               <li v-for="(page, index) in pagination.last_page" :key="page.index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
-                <a href="javascript:;" @click="fetchSmartebookList(page)">{{ page }}</a>
+                <a href="javascript:;" @click="fetchSmartexerciseList(page)">{{ page }}</a>
               </li>
               <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
-                <a class="page-link" href="javascript:;" @click="fetchSmartebookList(pagination.current_page + 1)">Next</a>
+                <a class="page-link" href="javascript:;" @click="fetchSmartexerciseList(pagination.current_page + 1)">Next</a>
               </li>
             </ul>
           </nav>
@@ -64,16 +64,16 @@
       </div>
     </div><!--/.col-->
     
-    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editSmartebook(dataForm.idsb)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editSmartexercise(dataForm.idse)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header">
-        <h4 class="modal-title">{{ dataForm.idsb ? "Edit Data" : "Tambah Data" }}</h4>
+        <h4 class="modal-title">{{ dataForm.idse ? "Edit Data" : "Tambah Data" }}</h4>
       </div>
 
         <div class="card-block">
           <form>
             <div class="form-group has-error">
               <label for="company">File</label>
-              <input type="text" id="firstname" name="firstname" class="form-control" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama" required >
+              <input type="text" class="form-control" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama" required >
             </div>
 
             <div class="form-group">
@@ -117,7 +117,7 @@
 
     </modal>
 
-    <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteSmartebook(dataForm.idsb)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteSmartexercise(dataForm.idse)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header"><h4 class="modal-title">Delete Data</h4></div>
       <div class="card-block"><div class="form-group"> <label for="company">Apakah kamu yakin? </label></div></div>
     </modal>
@@ -144,7 +144,7 @@
           deleteModal: false,
           list: [],
           dataForm: {
-            idsb: '',
+            idse: '',
             file: '',
             keterangan: ''
           },
@@ -161,14 +161,14 @@
       },
         
         created() {
-          this.fetchSmartebookList();
+          this.fetchSmartexerciseList();
           this.getJenjang();
           this.getKurikulum();
         },
         
         methods: {
-          fetchSmartebookList(page) {
-            axios.get('api/smartebook?page=' + page + '&keyword=' + this.keyword)
+          fetchSmartexerciseList(page) {
+            axios.get('api/smartexercise?page=' + page + '&keyword=' + this.keyword)
               .then((res) => {
                 this.list = res.data;
                 this.pagination = res.data.pagination;
@@ -176,17 +176,17 @@
               .catch((err) => console.error(err));
             },
           
-          createSmartebook() {
-            axios.post('api/smartebook', this.dataForm)
+          createSmartexercise() {
+            axios.post('api/smartexercise', this.dataForm)
               .then((res) => {
                 this.dataForm = {};
-                this.fetchSmartebookList();
+                this.fetchSmartexerciseList();
               })
               .catch((err) => console.error(err));
             },
             
-            popUpEditSmartebook(id){
-              axios.get('api/smartebook/' + id)
+            popUpEditSmartexercise(id){
+              axios.get('api/smartexercise/' + id)
                 .then((res) => {
                   this.primaryModal = true;
                   this.dataForm = res.data;
@@ -194,37 +194,37 @@
                 .catch((err) => console.error(err));
             },
 
-            popUpDeleteSmartebook(task){
+            popUpDeleteSmartexercise(task){
               this.dataForm = task;
               this.deleteModal = true;
             },
 
-            editSmartebook(id) {
+            editSmartexercise(id) {
               if(id && id !== ""){
-                 axios.put('api/smartebook/' + id, this.dataForm)
+                 axios.put('api/smartexercise/' + id, this.dataForm)
                 .then((res) => {
                   this.primaryModal = false;
                   this.dataForm = {};
-                  this.fetchSmartebookList()
+                  this.fetchSmartexerciseList()
                 })
                 .catch((err) => console.error(err));
               } else {
-                axios.post('api/smartebook', this.dataForm)
+                axios.post('api/smartexercise', this.dataForm)
                 .then((res) => {
                   this.primaryModal = false;
                   this.dataForm = {};
-                  this.fetchSmartebookList()
+                  this.fetchSmartexerciseList()
                 })
               .catch((err) => console.error(err));
               }
             },
 
-            deleteSmartebook(id) {
-              axios.delete('api/smartebook/' + id)
+            deleteSmartexercise(id) {
+              axios.delete('api/smartexercise/' + id)
                 .then((res) => {
                   this.deleteModal = false;
                   this.dataForm = {};
-                  this.fetchSmartebookList()
+                  this.fetchSmartexerciseList()
                 })
                 .catch((err) => console.error(err));
             },

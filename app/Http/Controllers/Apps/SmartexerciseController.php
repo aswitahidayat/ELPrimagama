@@ -4,21 +4,20 @@ namespace App\Http\Controllers\Apps;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Smartebook;
+use App\Models\Smartexercise;
 
-class SmartebookController extends Controller
+class SmartexerciseController extends Controller
 {
     /**
      *
      * Constructor
      *
      */
-    protected $request;
-    
-    public function __construct(Request $request) {
-        $this->request = $request;
-    }
-
+     protected $request;
+     
+     public function __construct(Request $request) {
+         $this->request = $request;
+     }
 
     /**
      * Display a listing of the resource.
@@ -28,10 +27,10 @@ class SmartebookController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Smartebook::where("nmfile", "LIKE","%$keyword%")
-                                ->orWhere("keterangan", "LIKE","%$keyword%")
-                                ->orderBy('idsb', 'asc')
-                                ->paginate(10);
+        $results = Smartexercise::where("nmfile", "LIKE","%$keyword%")
+                                    ->orWhere("keterangan", "LIKE","%$keyword%")
+                                    ->orderBy('idse', 'asc')
+                                    ->paginate(10);
 
         $response = [
             'pagination' => [
@@ -71,7 +70,7 @@ class SmartebookController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Smartebook::create([ 
+        return Smartexercise::create([ 
             'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan,
             'jenjang1' => $request->jenjang1,
@@ -88,7 +87,7 @@ class SmartebookController extends Controller
      */
     public function show($id)
     {
-        return Smartebook::where('idsb', $id)
+        return Smartexercise::where('idse', $id)
             ->first();
     }
 
@@ -117,7 +116,7 @@ class SmartebookController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Smartebook::where('idsb', $id)
+        return Smartexercise::where('idse', $id)
             ->update([ 
                 'nmfile' => $request->nmfile,
                 'keterangan' => $request->keterangan,
@@ -135,6 +134,6 @@ class SmartebookController extends Controller
      */
     public function destroy($id)
     {
-        return Smartebook::where('idsb', $id)->delete();
+        return Smartexercise::where('idse', $id)->delete();
     }
 }

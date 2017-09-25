@@ -4,21 +4,20 @@ namespace App\Http\Controllers\Apps;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Smartebook;
+use App\Models\Pikse;
 
-class SmartebookController extends Controller
+class PikseController extends Controller
 {
     /**
      *
      * Constructor
      *
      */
-    protected $request;
-    
-    public function __construct(Request $request) {
-        $this->request = $request;
-    }
-
+     protected $request;
+     
+     public function __construct(Request $request) {
+         $this->request = $request;
+     }
 
     /**
      * Display a listing of the resource.
@@ -28,10 +27,10 @@ class SmartebookController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Smartebook::where("nmfile", "LIKE","%$keyword%")
-                                ->orWhere("keterangan", "LIKE","%$keyword%")
-                                ->orderBy('idsb', 'asc')
-                                ->paginate(10);
+        $results = Pikse::where("nmfile", "LIKE","%$keyword%")
+                            ->orWhere("keterangan", "LIKE","%$keyword%")
+                            ->orderBy('idpikse', 'asc')
+                            ->paginate(10);
 
         $response = [
             'pagination' => [
@@ -71,7 +70,7 @@ class SmartebookController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Smartebook::create([ 
+        return Pikse::create([ 
             'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan,
             'jenjang1' => $request->jenjang1,
@@ -88,7 +87,7 @@ class SmartebookController extends Controller
      */
     public function show($id)
     {
-        return Smartebook::where('idsb', $id)
+        return Pikse::where('idpikse', $id)
             ->first();
     }
 
@@ -117,7 +116,7 @@ class SmartebookController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Smartebook::where('idsb', $id)
+        return Pikse::where('idpikse', $id)
             ->update([ 
                 'nmfile' => $request->nmfile,
                 'keterangan' => $request->keterangan,
@@ -135,6 +134,6 @@ class SmartebookController extends Controller
      */
     public function destroy($id)
     {
-        return Smartebook::where('idsb', $id)->delete();
+        return Pikse::where('idpikse', $id)->delete();
     }
 }

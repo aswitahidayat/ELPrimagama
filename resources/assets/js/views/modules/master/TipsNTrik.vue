@@ -6,7 +6,18 @@
           <i class="fa fa-align-justify"></i> Tips N Trik Table
         </div>
         <div class="card-block">
-          <button type="button" class="btn btn-primary" @click="primaryModal = true"><i class="fa fa-plus"></i> Tambah</button>
+          <div class="row">
+            <div class="col-sm-3">
+              <button type="button" class="btn btn-primary" @click="primaryModal = true"><i class="fa fa-plus"></i> Tambah</button>   
+            </div>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <input type="text" id="username2" name="username2" v-model="keyword" placeholder="Cari" class="form-control">
+                <button @click="fetchMititiList()" class="input-group-addon"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+
           <table class="table table-bordered table-striped table-condensed">
             <thead>
               <tr>
@@ -23,7 +34,7 @@
                 <td>{{ task.keterangan }}</td>
                 <td>
                   <button type="button" class="btn btn-primary" @click="popUpEditMititi(task.RecID)"><i class="fa fa-edit"></i></button>
-                  <button @click="deleteMititi(task.RecID)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                  <button @click="popUpDeleteMititi(task)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
                 </td>
               </tr>
             </tbody>
@@ -65,6 +76,22 @@
 
         </div>
 
+        <div slot="modal-footer" class="modal-footer">
+          <button type="button" class="btn btn-default" @click="dataForm = {};primaryModal = false">Tutup</button> 
+          <button type="submit" class="btn btn-primary" @click="editMititi(dataForm.RecID)">Simpan</button>
+        </div>
+    </modal>
+
+    <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteMititi(dataForm.RecID)" effect="fade/zoom">
+      <div slot="modal-header" class="modal-header">
+        <h4 class="modal-title">Delete Data</h4>
+      </div>
+
+      <div class="card-block">
+         <div class="form-group">
+              <label for="company">Apakah kamu yakin? </label>
+         </div>
+      </div>
     </modal>
   </div><!--/.row-->
 
@@ -72,15 +99,21 @@
 
 <script>
   import modal from 'vue-strap/src/Modal'
+  import { input as bsInput, formValidator } from 'vue-strap'
     
     export default {
       name: 'modals',
       components: {
-        modal
+        modal,
+        formValidator,
+        bsInput,
       },
       data() {
         return {
+          valid: false,
+          keyword: '',
           primaryModal: false,
+          deleteModal: false,
           list: [],
           dataForm: {
             id: '',
@@ -103,7 +136,7 @@
         
         methods: {
           fetchMititiList(page) {
-            axios.get('api/mititi?page=' + page)
+            axios.get('api/mititi?page=' + page + '&keyword=' + this.keyword)
               .then((res) => {
                 this.list = res.data;
                 this.pagination = res.data.pagination;
@@ -149,39 +182,21 @@
               }
             },
 
+            popUpDeleteMititi(task){
+              this.dataForm = task;
+              this.deleteModal = true;
+            },
+            
             deleteMititi(id) {
               axios.delete('api/mititi/' + id)
                 .then((res) => {
+                  this.dataForm = {};
+                  this.deleteModal = false;
                   this.fetchMititiList()
                 })
                 .catch((err) => console.error(err));
             },
 
-            pagesNumber: function () {
-                if (!this.pagination.to) {
-                    return [];
-                }
-                var from = this.pagination.current_page - this.offset;
-                if (from < 1) {
-                    from = 1;
-                }
-                var to = from + (this.offset * 2);
-                if (to >= this.pagination.last_page) {
-                    to = this.pagination.last_page;
-                }
-                var pagesArray = [];
-                while (from <= to) {
-                    pagesArray.push(from);
-                    from++;
-                }
-
-                return pagesArray;
-            },
-
-            changePage: function (page) {
-                this.pagination.current_page = page;
-                this.fetchItems(page);
-            }
         }
     }
 </script>

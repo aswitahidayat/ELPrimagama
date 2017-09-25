@@ -9,14 +9,28 @@ use App\Models\Kalpen;
 class KalpenController extends Controller
 {
     /**
+     *
+     * Constructor
+     *
+     */
+     protected $request;
+     
+     public function __construct(Request $request) {
+         $this->request = $request;
+     }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $results = Kalpen::orderBy('RecID', 'asc')
-                ->paginate(10);
+        $keyword  = $this->request->input('keyword');
+        $results = Kalpen::where("judul", "LIKE","%$keyword%")
+                            ->orWhere("keterangan", "LIKE","%$keyword%")
+                            ->orderBy('RecID', 'asc')
+                            ->paginate(10);
 
         $response = [
             'pagination' => [

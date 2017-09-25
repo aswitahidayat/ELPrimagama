@@ -23,4 +23,6 @@ Route::prefix('api')->group(function() {
     Route::resource('propinsi', 'Apps\PropinsiController');
     Route::resource('kota', 'Apps\KotaController');
     Route::resource('kurikulum', 'Apps\KurikulumController');
+    Route::resource('smartexercise', 'Apps\SmartexerciseController');
+    Route::resource('pikse', 'Apps\PikseController');
 });

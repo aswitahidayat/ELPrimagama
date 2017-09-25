@@ -7,7 +7,7 @@ use App\Models\Jenjang;
 use App\Models\Kurikulum;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class SmartEbook extends Model
+class Smartexercise extends Model
 {
     public $timestamps = false;
     /**
@@ -15,7 +15,7 @@ class SmartEbook extends Model
      *
      * @var string
      */
-     protected $table = 'dbo.smartbook';
+     protected $table = 'dbo.smartexercise';
     
     /**
      * The attributes that are mass assignable.

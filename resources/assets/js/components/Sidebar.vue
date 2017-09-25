@@ -36,6 +36,16 @@
             <li class="nav-item">
               <router-link :to="'/master/kalpen'" class="nav-link" exact><i class="icon-puzzle"></i> Kalpen</router-link>
             </li>
+            <li class="nav-item">
+              <router-link :to="'/master/smartebook'" class="nav-link" exact><i class="icon-puzzle"></i> Smart Ebook</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link :to="'/master/smartexercise'" class="nav-link" exact><i class="icon-puzzle"></i> Smart Exercise</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link :to="'/master/pikse'" class="nav-link" exact><i class="icon-puzzle"></i> Pikse</router-link>
+            </li>
+            
           </ul>
         </router-link>
 

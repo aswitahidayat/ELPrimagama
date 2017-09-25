@@ -22,6 +22,8 @@ import TipsNTrik from '../views/modules/master/TipsNTrik';
 import Kalpen from '../views/modules/master/Kalpen';
 import Banner from '../views/modules/master/Banner';
 import Smartebook from '../views/modules/master/Smartebook';
+import Smartexercise from '../views/modules/master/Smartexercise';
+import Pikse from '../views/modules/master/Pikse';
 
 Vue.use(Router);
 
@@ -66,8 +68,18 @@ export default new Router({
             },
             {
               path: 'smartebook',
-              name: 'Smartebook',
+              name: 'Smart E-Book',
               component: Smartebook
+            },
+            {
+              path: 'smartexercise',
+              name: 'Smart E-Xercise',
+              component: Smartexercise,
+            },
+            {
+              path: 'pikse',
+              name: 'Pikse',
+              component: Pikse,
             }
           ]
         }
@@ -102,6 +114,11 @@ export default new Router({
           component: Register
         }
       ]
-    }
+    },
+    {
+      path: '*',
+      name: 'Pages',
+      component: Page404,
+    },
   ]
 });
