@@ -141,7 +141,7 @@ export default new Router({
     },
     {
       path: '*',
-      name: 'Pages',
+      name: '404',
       component: Page404,
     },
   ]

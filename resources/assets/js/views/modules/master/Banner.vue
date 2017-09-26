@@ -1,146 +1,143 @@
 <template>
-  <div id="app">
-    <div class="container">
-      <!--UPLOAD-->
-      <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
-        <h1>Upload images</h1>
-        <div class="dropbox">
-          <input type="file" multiple :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length"
-            accept="image/*" class="input-file">
-            <p v-if="isInitial">
-              Drag your file(s) here to begin<br> or click to browse
-            </p>
-            <p v-if="isSaving">
-              Uploading {{ fileCount }} files...
-            </p>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Tips N Trik Table
         </div>
-      </form>
-      <!--SUCCESS-->
-      <div v-if="isSuccess">
-        <h2>Uploaded {{ uploadedFiles.length }} file(s) successfully.</h2>
-        <p>
-          <a href="javascript:void(0)" @click="reset()">Upload again</a>
-        </p>
-        <ul class="list-unstyled">
-          <li v-for="item in uploadedFiles">
-            <img :src="item.url" class="img-responsive img-thumbnail" :alt="item.originalName">
-          </li>
-        </ul>
+        <div class="card-block">
+          <div class="row">
+            <div class="col-sm-3">
+              <button type="button" class="btn btn-primary" @click="primaryModal = true"><i class="fa fa-plus"></i> Tambah</button>   
+            </div>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <input type="text" id="username2" name="username2" v-model="keyword" placeholder="Cari" class="form-control">
+                <button @click="fetchBakmiList()" class="input-group-addon"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <table class="table table-bordered table-striped table-condensed">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>File</th>
+                <th>Keterangan</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(task, index) in list.data" :key="index">
+                <td>{{ index + list.pagination.from }}</td>
+                <td>{{ task.nmfile }}</td>
+                <td>{{ task.keterangan }}</td>
+                <td>
+                  <button type="button" class="btn btn-primary" @click="popUpEditBakmi(task.RecID)"><i class="fa fa-edit"></i></button>
+                  <button @click="popUpDeleteBakmi(task)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <nav>
+            <ul class="pagination">
+              <li class="page-item" v-if="pagination.current_page > 1" >
+                <a class="page-link" href="javascript:;" @click="fetchBakmiList(pagination.current_page - 1)">Prev</a>
+              </li>
+              <li v-for="(page, index) in pagination.last_page" :key="index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
+                <a href="javascript:;" @click="fetchBakmiList(page)">{{ page }}</a>
+              </li>
+              <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
+                <a class="page-link" href="javascript:;" @click="fetchBakmiList(pagination.current_page + 1)">Next</a>
+              </li>
+            </ul>
+          </nav>
+
+        </div>
       </div>
-      <!--FAILED-->
-      <div v-if="isFailed">
-        <h2>Uploaded failed.</h2>
-        <p>
-          <a href="javascript:void(0)" @click="reset()">Try again</a>
-        </p>
-        <pre>{{ uploadError }}</pre>
+    </div><!--/.col-->
+    
+    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editBakmi(dataForm.RecID)" effect="fade/zoom">
+      <div slot="modal-header" class="modal-header">
+        <h4 class="modal-title">{{ dataForm.id ? "Edit Data" : "Tambah Data" }}</h4>
       </div>
-    </div>
-  </div>
+
+        <div class="card-block">
+          <div class="form-group">
+            <label for="company">File</label>
+            <input type="text" class="form-control" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+          </div>
+
+          <div class="form-group">
+            <label for="company">Keterangan</label>
+            <input type="text" class="form-control" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+          </div>
+
+          <div class="form-group">
+            <label for="company">Keterangan</label>
+            <file-upload @fileChange="onClickChild"></file-upload>
+          </div>
+
+        </div>
+
+        <div slot="modal-footer" class="modal-footer">
+          <button type="button" class="btn btn-default" @click="dataForm = {};primaryModal = false">Tutup</button> 
+          <button type="submit" class="btn btn-primary" @click="editBakmi(dataForm.RecID)">Simpan</button>
+        </div>
+    </modal>
+
+    <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteBakmi(dataForm.RecID)" effect="fade/zoom">
+      <div slot="modal-header" class="modal-header">
+        <h4 class="modal-title">Delete Data</h4>
+      </div>
+
+      <div class="card-block">
+         <div class="form-group">
+              <label for="company">Apakah kamu yakin? </label>
+         </div>
+      </div>
+    </modal>
+  </div><!--/.row-->
+
 </template>
 
 <script>
-
-  const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
-
+  import modal from 'vue-strap/src/Modal'
   export default {
     name: 'app',
+    components: {
+        modal,
+      },
     data() {
       return {
-        uploadedFiles: [],
-        uploadError: null,
-        currentStatus: null,
-        uploadFieldName: 'photos'
+        keyword: '',
+        myPhoto: '',
       }
     },
-    computed: {
-      isInitial() {
-        return this.currentStatus === STATUS_INITIAL;
-      },
-      isSaving() {
-        return this.currentStatus === STATUS_SAVING;
-      },
-      isSuccess() {
-        return this.currentStatus === STATUS_SUCCESS;
-      },
-      isFailed() {
-        return this.currentStatus === STATUS_FAILED;
-      }
-    },
+   
     methods: {
-      reset() {
-        // reset form to initial state
-        this.currentStatus = STATUS_INITIAL;
-        this.uploadedFiles = [];
-        this.uploadError = null;
+      onClickChild (value) {
+        console.log(value);
+        this.myPhoto = value;
       },
-      save(formData) {
-        // upload data to the server
-        this.currentStatus = STATUS_SAVING;
-        const url = `${BASE_URL}/photos/upload`;
 
-        upload(formData)
-          .then(wait(1500)) // DEV ONLY: wait for 1.5s 
-          .then(x => {
-            this.uploadedFiles = [].concat(x);
-            this.currentStatus = STATUS_SUCCESS;
-          })
-          .catch(err => {
-            this.uploadError = err.response;
-            this.currentStatus = STATUS_FAILED;
-          });
+      onFileChange(e) {
+        let files = e.target.files || e.dataTransfer.files;
+        if (!files.length)
+            return;
+        this.myPhoto = files[0]
       },
-      filesChange(fieldName, fileList) {
-        // handle file changes
-        const formData = new FormData();
-
-        if (!fileList.length) return;
-
-        // append the files to FormData
-        Array
-          .from(Array(fileList.length).keys())
-          .map(x => {
-            formData.append(fieldName, fileList[x], fileList[x].name);
-          });
-
-        // save it
-        this.save(formData);
+      upload(){
+        let formData = new FormData()
+        formData.append('img', this.myPhoto)
+        axios.post('api/banner', formData)
+              .then((res) => {
+                //
+              })
+              .catch((err) => console.error(err));
       }
-    },
-    mounted() {
-      this.reset();
     },
   }
 
 </script>
-
-<style lang="scss">
-  .dropbox {
-    outline: 2px dashed grey; /* the dash box */
-    outline-offset: -10px;
-    background: lightcyan;
-    color: dimgray;
-    padding: 10px 10px;
-    min-height: 200px; /* minimum height */
-    position: relative;
-    cursor: pointer;
-  }
-  
-  .input-file {
-    opacity: 0; /* invisible but it's there! */
-    width: 100%;
-    height: 200px;
-    position: absolute;
-    cursor: pointer;
-  }
-  
-  .dropbox:hover {
-    background: lightblue; /* when mouse over to the drop zone, change color */
-  }
-  
-  .dropbox p {
-    font-size: 1.2em;
-    text-align: center;
-    padding: 50px 0;
-  }
-</style>

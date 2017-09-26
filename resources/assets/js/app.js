@@ -21,6 +21,7 @@ import App from './App.vue';
 import router from './router';
 
 Vue.component('App', require('./App.vue'));
+Vue.component('file-upload',require('./components/FileUpload.vue'));
 
 /* eslint-disable no-new */
 const app = new Vue({

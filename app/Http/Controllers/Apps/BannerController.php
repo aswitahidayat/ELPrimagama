@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\App;
+namespace App\Http\Controllers\Apps;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,7 +14,7 @@ class BannerController extends Controller
      */
     public function index()
     {
-        //
+        return 'hai';
     }
 
     /**
@@ -35,7 +35,7 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->file('img')->move(public_path('images'), "aa");    
     }
 
     /**

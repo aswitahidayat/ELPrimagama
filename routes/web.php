@@ -31,4 +31,5 @@ Route::prefix('api')->group(function() {
     Route::resource('bakmi', 'Apps\BakmiController');
     Route::resource('ketela', 'Apps\KetelaController');
     Route::resource('sekolah', 'Apps\SekolahController');
+    Route::resource('banner', 'Apps\BannerController');
 });

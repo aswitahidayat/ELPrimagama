@@ -110,7 +110,6 @@
       },
       data() {
         return {
-          valid: false,
           keyword: '',
           primaryModal: false,
           deleteModal: false,
