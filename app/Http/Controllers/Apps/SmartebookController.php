@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Apps;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Smartebook;
+use Illuminate\Support\Facades\DB;
 
 class SmartebookController extends Controller
 {
@@ -74,7 +75,7 @@ class SmartebookController extends Controller
         return Smartebook::create([ 
             'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan,
-            'jenjang1' => $request->jenjang1,
+            'jenjang' => $request->jenjang,
             'jenjang2' => $request->jenjang2,
             'kurikulum' => $request->kurikulum
         ]);
@@ -116,14 +117,16 @@ class SmartebookController extends Controller
             'nmfile' => 'required|max:500',
             'keterangan' => 'required|max:500'
         ]);
+        //$a = DB::raw("CONVERT(VARBINARY(MAX), '$request->uploadFilez')");
 
         return Smartebook::where('idsb', $id)
             ->update([ 
                 'nmfile' => $request->nmfile,
                 'keterangan' => $request->keterangan,
-                'jenjang1' => $request->jenjang1,
+                'jenjang' => $request->jenjang,
                 'jenjang2' => $request->jenjang2,
-                'kurikulum' => $request->kurikulum
+                'kurikulum' => $request->kurikulum,
+                'uploadFilez' => $request->uploadFilez, 
             ]);
     }
 

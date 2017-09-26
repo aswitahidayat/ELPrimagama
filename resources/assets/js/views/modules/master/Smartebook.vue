@@ -64,7 +64,7 @@
       </div>
     </div><!--/.col-->
     
-    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="editSmartebook(dataForm.idsb)" effect="fade/zoom">
+    <modal title="Modal title" class="modal-primary" v-model="primaryModal" @ok="uploadFile(dataForm.idsb)" effect="fade/zoom">
       <div slot="modal-header" class="modal-header">
         <h4 class="modal-title">{{ dataForm.idsb ? "Edit Data" : "Tambah Data" }}</h4>
       </div>
@@ -108,11 +108,21 @@
             </div>
 
             <div class="form-group">
+              <label for="company">File</label>
+              <input type="file" v-on:change="onFileChange" class="form-control">
+            </div>
+
+            <div class="form-group">
               <label for="company">Kurikulum</label>
               <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" placeholder="Masukan Kurikulum">
             </div>
           </form>
 
+        </div>
+        <div slot="modal-footer" class="modal-footer">
+          <button type="button" class="btn btn-default" @click="dataForm = {};primaryModal = false">Tutup</button> 
+          <button type="submit" class="btn btn-primary" @click="editSmartebook(dataForm.idsb)" v-if="ready">Simpan</button>
+          <button type="submit" class="btn btn-primary disabled" v-if="!ready">Loading</button>
         </div>
 
     </modal>
@@ -140,15 +150,17 @@
       },
       data() {
         return {
+          ready: true,
           valid: false,
           keyword: '',
+          myFile: '',
           primaryModal: false,
           deleteModal: false,
           list: [],
           dataForm: {
             idsb: '',
             file: '',
-            keterangan: ''
+            keterangan: '',
           },
           listJenjang: [],
           listKurikulum: [],
@@ -169,6 +181,25 @@
         },
         
         methods: {
+          onFileChange(e) {
+            var vm = this;
+
+            vm.ready = false;
+            let files = e.target.files || e.dataTransfer.files;
+            if (!files.length)
+                return;
+            vm.fileName = files[0].name;
+            vm.myFile = files[0];
+
+            var reader = new FileReader();
+              reader.onloadend = function (event) {
+                //event.target.result;
+                vm.dataForm.uploadFilez = event.target.result;
+                vm.ready = true;
+              };
+
+              reader.readAsDataURL(vm.myFile);
+          },
           fetchSmartebookList(page) {
             axios.get('api/smartebook?page=' + page + '&keyword=' + this.keyword)
               .then((res) => {
@@ -202,6 +233,9 @@
             popUpDeleteSmartebook(task){
               this.dataForm = task;
               this.deleteModal = true;
+            },
+
+            uploadFile(id){
             },
 
             editSmartebook(id) {

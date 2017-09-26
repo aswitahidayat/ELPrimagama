@@ -66,7 +66,8 @@
         <div class="card-block">
           <div class="form-group">
             <label for="company">File</label>
-            <input type="text" class="form-control" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+            <input name="first_name" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+            <span v-show="errors.has('first_name')" class="help-block">{{ errors.first('first_name') }}</span>
           </div>
 
           <div class="form-group">
@@ -170,7 +171,6 @@
                   this.fetchMititiList()
                 })
               .catch((err) => {
-                debugger;
                 console.log("err");
               }); 
               }

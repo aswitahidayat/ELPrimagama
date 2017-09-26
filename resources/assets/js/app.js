@@ -19,9 +19,12 @@ require('./bootstrap');
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
+import VeeValidate from 'vee-validate';
 
 Vue.component('App', require('./App.vue'));
 Vue.component('file-upload',require('./components/FileUpload.vue'));
+
+Vue.use(VeeValidate);
 
 /* eslint-disable no-new */
 const app = new Vue({
