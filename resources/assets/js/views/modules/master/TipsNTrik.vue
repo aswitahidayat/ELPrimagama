@@ -66,20 +66,21 @@
         <div class="card-block">
           <div class="form-group">
             <label for="company">File</label>
-            <input name="first_name" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
-            <span v-show="errors.has('first_name')" class="help-block">{{ errors.first('first_name') }}</span>
+            <input name="nama" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+            <span v-show="errors.has('nama')" class="help-block">nama diperlukan</span>
           </div>
 
           <div class="form-group">
             <label for="company">Keterangan</label>
-            <input type="text" class="form-control" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+            <input name="keterangan" type="text" class="form-control" v-validate="'required'" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+            <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
           </div>
 
         </div>
 
         <div slot="modal-footer" class="modal-footer">
           <button type="button" class="btn btn-default" @click="dataForm = {};primaryModal = false">Tutup</button> 
-          <button type="submit" class="btn btn-primary" @click="editMititi(dataForm.RecID)">Simpan</button>
+          <button type="submit" class="btn btn-primary" @click="vaidateForm(dataForm.RecID)">Simpan</button>
         </div>
     </modal>
 
@@ -154,7 +155,17 @@
                 .catch((err) => console.error(err));
             },
 
+            vaidateForm(id){
+              this.$validator.validateAll().then((result) => {
+                if (result) {
+                  this.editMititi(id);
+                }
+                alert('Correct them errors!');
+              });
+            },
+
             editMititi(id) {
+              
               if(id && id !== ""){
                  axios.put('api/mititi/' + id, this.dataForm)
                 .then((res) => {

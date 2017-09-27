@@ -77,7 +77,10 @@ class SmartebookController extends Controller
             'keterangan' => $request->keterangan,
             'jenjang' => $request->jenjang,
             'jenjang2' => $request->jenjang2,
-            'kurikulum' => $request->kurikulum
+            'kurikulum' => $request->kurikulum,
+            'uploadFile' => $request->uploadFile,
+            'fileName' => $request->fileName,
+            'fileType' => $request->fileType,
         ]);
     }
 
@@ -126,7 +129,9 @@ class SmartebookController extends Controller
                 'jenjang' => $request->jenjang,
                 'jenjang2' => $request->jenjang2,
                 'kurikulum' => $request->kurikulum,
-                'uploadFilez' => $request->uploadFilez, 
+                'uploadFile' => $request->uploadFile,
+                'fileName' => $request->fileName,
+                'fileType' => $request->fileType,
             ]);
     }
 

@@ -22,7 +22,6 @@ import router from './router';
 import VeeValidate from 'vee-validate';
 
 Vue.component('App', require('./App.vue'));
-Vue.component('file-upload',require('./components/FileUpload.vue'));
 
 Vue.use(VeeValidate);
 

@@ -22,7 +22,7 @@ class SmartEbook extends Model
      *
      * @var array
      */
-     protected $fillable = ['nama', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum'];
+     protected $fillable = ['nmfile', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum', 'uploadFile', 'fileName', 'fileType'];
      protected $appends = array('jenjangdata' , 'jenjang2data');
 
      public function getJenjangdataAttribute()

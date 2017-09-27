@@ -29,7 +29,7 @@ export default {
     Sidebar,
     AppAside,
     AppFooter,
-    Breadcrumb
+    Breadcrumb,
   },
   computed: {
     name () {

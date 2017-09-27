@@ -108,14 +108,20 @@
             </div>
 
             <div class="form-group">
-              <label for="company">File</label>
-              <input type="file" v-on:change="onFileChange" class="form-control">
-            </div>
-
-            <div class="form-group">
               <label for="company">Kurikulum</label>
               <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" placeholder="Masukan Kurikulum">
             </div>
+            
+            <div class="form-group">
+              <label for="company">File</label>
+              
+              <input type="file" v-on:change="onFileChange" class="form-control" v-if="!dataForm.uploadFile">
+              <div v-if="dataForm.uploadFile">
+                <img :src="dataForm.uploadFile" class="form-control" style="width: 100px;"/>
+                <button type="button"  @click="dataForm.uploadFile =''" class="btn btn-sm btn-primary" >Hapus File</button>
+              </div>
+            </div>
+
           </form>
 
         </div>
@@ -138,7 +144,7 @@
 <script>
   import modal from 'vue-strap/src/Modal'
   import { input as bsInput, formValidator } from 'vue-strap'
-  import vueToast from 'vue-toast'
+  import toastr from 'toastr'
     
     export default {
       name: 'modals',
@@ -146,7 +152,7 @@
         modal,
         formValidator,
         bsInput,
-        vueToast,
+        toastr,
       },
       data() {
         return {
@@ -159,6 +165,7 @@
           list: [],
           dataForm: {
             idsb: '',
+            nmfile: '',
             file: '',
             keterangan: '',
           },
@@ -190,17 +197,22 @@
                 return;
             vm.fileName = files[0].name;
             vm.myFile = files[0];
+            
+            vm.dataForm.fileName = vm.myFile.name;
+            vm.dataForm.fileType = vm.myFile.type;
 
             var reader = new FileReader();
               reader.onloadend = function (event) {
                 //event.target.result;
-                vm.dataForm.uploadFilez = event.target.result;
+                vm.dataForm.uploadFile = event.target.result;
                 vm.ready = true;
               };
 
               reader.readAsDataURL(vm.myFile);
           },
           fetchSmartebookList(page) {
+                            toastr.success('Create successfully');
+
             axios.get('api/smartebook?page=' + page + '&keyword=' + this.keyword)
               .then((res) => {
                 this.list = res.data;
@@ -212,6 +224,7 @@
           createSmartebook() {
             axios.post('api/smartebook', this.dataForm)
               .then((res) => {
+                toastr.success('Create successfully');
                 this.dataForm = {};
                 this.fetchSmartebookList();
               })
@@ -263,7 +276,8 @@
                 .then((res) => {
                   this.deleteModal = false;
                   this.dataForm = {};
-                  this.fetchSmartebookList()
+                  this.fetchSmartebookList();
+                  toastr.success('Book removed successfully');
                 })
                 .catch((err) => console.error(err));
             },
