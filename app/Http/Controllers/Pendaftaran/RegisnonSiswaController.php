@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Apps;
+namespace App\Http\Controllers\Pendafaran;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Smartebook;
+use App\Models\RegisnonSiswa;
 use Illuminate\Support\Facades\DB;
 
-class SmartebookController extends Controller
+class RegisnonSiswaController extends Controller
 {
     /**
      *
@@ -129,9 +129,9 @@ class SmartebookController extends Controller
                 'jenjang' => $request->jenjang,
                 'jenjang2' => $request->jenjang2,
                 'kurikulum' => $request->kurikulum,
-                'uploadFile' => $request->myFile['uploadFile'],
-                'fileName' => $request->myFile['fileName'],
-                'fileType' => $request->myFile['fileType'],
+                'uploadFile' => $request->uploadFile,
+                'fileName' => $request->fileName,
+                'fileType' => $request->fileType,
             ]);
     }
 
