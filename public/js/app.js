@@ -53260,7 +53260,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
 
-    props: ['id'],
+    props: {
+        okFunc: {
+            type: Function,
+            required: true
+        }
+    },
     components: {
         modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a
     },
@@ -53270,14 +53275,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     methods: {
-        showDialog: function showDialog() {
-            this.show = true;
-        },
-        okFunc: function okFunc(e) {
-            var files = e.target.files || e.dataTransfer.files;
-            if (!files.length) return;
-            this.createImage(files[0]);
-            this.$emit('fileChange', files[0]);
+        callFunc: function callFunc() {
+            this.deleteModal = false;
+            this.okFunc();
         }
     }
 });
@@ -53511,73 +53511,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {},
-  data: function data() {
-    return {
-      image: '',
-      ready: true
-    };
-  },
-
-  props: {
-    myFile: {
-      type: Object,
-      default: function _default() {
-        return { message: 'hello' };
-      }
+    created: function created() {},
+    data: function data() {
+        return {
+            image: '',
+            ready: true
+        };
     },
-    onFileChange: {
-      type: Function,
-      required: true
-    }
-  },
-  components: {
-    modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a
-  },
-  events: {
-    showDialogChild: function showDialogChild() {
-      this.showDialog();
-    }
-  },
-  methods: {
-    // onFileChange(e) {
-    //   var vm = this;
 
-    //   vm.ready = false;
-    //   let files = e.target.files || e.dataTransfer.files;
-    //   if (!files.length)
-    //       return;
-
-    //   vm.myFile = files[0];
-
-    //   // vm.dataForm.fileName = vm.myFile.name;
-    //   // vm.dataForm.fileType = vm.myFile.type;
-
-    //   var reader = new FileReader();
-    //     reader.onloadend = function (event) {
-    //       //event.target.result;
-    //       vm.myFile.data = event.target.result;
-    //       vm.ready = true;
-    //       this.$emit('fileUploaded', vm.myFile);
-    //     };
-
-    //     reader.readAsDataURL(vm.myFile);
-    // },
-    showDialog: function showDialog() {
-      this.show = true;
+    props: {
+        myFile: {
+            type: Object,
+            default: function _default() {
+                return { message: 'hello' };
+            }
+        },
+        onFileChange: {
+            type: Function,
+            required: true
+        }
     },
-    okFunc: function okFunc(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-      this.$emit('fileChange', files[0]);
+    components: {
+        modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a
+    },
+    events: {
+        showDialogChild: function showDialogChild() {
+            this.showDialog();
+        }
+    },
+    methods: {
+        showDialog: function showDialog() {}
     }
-  }
 });
 
 /***/ }),
@@ -59211,110 +59179,127 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'modals',
-  components: {
-    modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-    formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
-    bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
-  },
-  data: function data() {
-    return {
-      keyword: '',
-      primaryModal: false,
-      deleteModal: false,
-      list: [],
-      dataForm: {
-        id: '',
-        nmfile: '',
-        keterangan: ''
-      },
-      pagination: {
-        total: 0,
-        per_page: 10,
-        from: 1,
-        to: 0,
-        current_page: 1
-      }
-    };
-  },
-  created: function created() {
-    this.fetchBakmiList();
-  },
-
-
-  methods: {
-    fetchBakmiList: function fetchBakmiList(page) {
-      var _this = this;
-
-      axios.get('api/bakmi?page=' + page + '&keyword=' + this.keyword).then(function (res) {
-        _this.list = res.data;
-        _this.pagination = res.data.pagination;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    name: 'modals',
+    components: {
+        modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
+        formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
+        bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
     },
-    createBakmi: function createBakmi() {
-      var _this2 = this;
-
-      axios.post('api/bakmi', this.dataForm).then(function (res) {
-        _this2.dataForm = {};
-        _this2.fetchBakmiList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    data: function data() {
+        return {
+            keyword: '',
+            primaryModal: false,
+            deleteModal: false,
+            list: [],
+            dataForm: {
+                id: '',
+                nmfile: '',
+                keterangan: ''
+            },
+            pagination: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1
+            }
+        };
     },
-    popUpEditBakmi: function popUpEditBakmi(id) {
-      var _this3 = this;
-
-      axios.get('api/bakmi/' + id).then(function (res) {
-        _this3.primaryModal = true;
-        _this3.dataForm = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    created: function created() {
+        this.fetchBakmiList();
     },
-    editBakmi: function editBakmi(id) {
-      var _this4 = this;
 
-      if (id && id !== "") {
-        axios.put('api/bakmi/' + id, this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchBakmiList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      } else {
-        axios.post('api/bakmi', this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchBakmiList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      }
-    },
-    popUpDeleteBakmi: function popUpDeleteBakmi(task) {
-      this.dataForm = task;
-      this.deleteModal = true;
-    },
-    deleteBakmi: function deleteBakmi(id) {
-      var _this5 = this;
 
-      axios.delete('api/bakmi/' + id).then(function (res) {
-        _this5.dataForm = {};
-        _this5.deleteModal = false;
-        _this5.fetchBakmiList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) {
+                this.dataForm = {};
+            }
+            this.errors.clear();
+        }
+    },
+
+    methods: {
+        fetchBakmiList: function fetchBakmiList(page) {
+            var _this = this;
+
+            axios.get('api/bakmi?page=' + page + '&keyword=' + this.keyword).then(function (res) {
+                _this.list = res.data;
+                _this.pagination = res.data.pagination;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        createBakmi: function createBakmi() {
+            var _this2 = this;
+
+            axios.post('api/bakmi', this.dataForm).then(function (res) {
+                _this2.dataForm = {};
+                _this2.fetchBakmiList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpEditBakmi: function popUpEditBakmi(id) {
+            var _this3 = this;
+
+            axios.get('api/bakmi/' + id).then(function (res) {
+                _this3.primaryModal = true;
+                _this3.dataForm = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        editBakmi: function editBakmi(id) {
+            var _this4 = this;
+
+            if (id && id !== "") {
+                axios.put('api/bakmi/' + id, this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchBakmiList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            } else {
+                axios.post('api/bakmi', this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchBakmiList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            }
+        },
+        popUpDeleteBakmi: function popUpDeleteBakmi(task) {
+            this.dataForm = task;
+            this.deleteModal = true;
+        },
+        deleteBakmi: function deleteBakmi(id) {
+            var _this5 = this;
+
+            axios.delete('api/bakmi/' + id).then(function (res) {
+                _this5.dataForm = {};
+                _this5.deleteModal = false;
+                _this5.fetchBakmiList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        }
     }
-  }
 });
 
 /***/ }),
@@ -59582,121 +59567,136 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'modals',
-  components: {
-    modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-    formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
-    bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"],
-    datepicker: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["datepicker"]
-  },
-  data: function data() {
-    return {
-      valid: false,
-      keyword: '',
-      primaryModal: false,
-      deleteModal: false,
-      list: [],
-      dataForm: {
-        RecID: '',
-        judul: '',
-        keterangan: '',
-        tanggal: ''
-      },
-      pagination: {
-        total: 0,
-        per_page: 10,
-        from: 1,
-        to: 0,
-        current_page: 1
-      }
-    };
-  },
-  created: function created() {
-    this.fetchKalpenList();
-  },
-
-
-  methods: {
-    resetDataFrom: function resetDataFrom() {
-      this.dataForm = {
-        RecID: '',
-        judul: '',
-        keterangan: '',
-        tanggal: ''
-      };
+    name: 'modals',
+    components: {
+        modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
+        formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
+        bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"],
+        datepicker: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["datepicker"]
     },
-    fetchKalpenList: function fetchKalpenList(page) {
-      var _this = this;
-
-      axios.get('api/kalpen?page=' + page + '&keyword=' + this.keyword).then(function (res) {
-        _this.list = res.data;
-        _this.pagination = res.data.pagination;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    data: function data() {
+        return {
+            valid: false,
+            keyword: '',
+            primaryModal: false,
+            deleteModal: false,
+            list: [],
+            dataForm: {
+                RecID: '',
+                judul: '',
+                keterangan: '',
+                tanggal: ''
+            },
+            pagination: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1
+            }
+        };
     },
-    createKalpen: function createKalpen() {
-      var _this2 = this;
-
-      axios.post('api/kalpen', this.dataForm).then(function (res) {
-        _this2.dataForm = {};
-        _this2.fetchKalpenList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    created: function created() {
+        this.fetchKalpenList();
     },
-    popUpEditKalpen: function popUpEditKalpen(RecID) {
-      var _this3 = this;
 
-      axios.get('api/kalpen/' + RecID).then(function (res) {
-        _this3.primaryModal = true;
-        _this3.dataForm = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
-    },
-    editKalpen: function editKalpen(RecID) {
-      var _this4 = this;
 
-      if (RecID && RecID !== "") {
-        axios.put('api/kalpen/' + RecID, this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchKalpenList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      } else {
-        axios.post('api/kalpen', this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchKalpenList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      }
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) {
+                this.dataForm = {};
+            }
+            this.errors.clear();
+        }
     },
-    popUpDeleteKalpen: function popUpDeleteKalpen(task) {
-      this.dataForm = task;
-      this.deleteModal = true;
-    },
-    deleteKalpen: function deleteKalpen(RecID) {
-      var _this5 = this;
 
-      axios.delete('api/kalpen/' + RecID).then(function (res) {
-        _this5.dataForm = {};
-        _this5.deleteModal = false;
-        _this5.fetchKalpenList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    methods: {
+        resetDataFrom: function resetDataFrom() {
+            this.dataForm = {
+                RecID: '',
+                judul: '',
+                keterangan: '',
+                tanggal: ''
+            };
+        },
+        fetchKalpenList: function fetchKalpenList(page) {
+            var _this = this;
+
+            axios.get('api/kalpen?page=' + page + '&keyword=' + this.keyword).then(function (res) {
+                _this.list = res.data;
+                _this.pagination = res.data.pagination;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        createKalpen: function createKalpen() {
+            var _this2 = this;
+
+            axios.post('api/kalpen', this.dataForm).then(function (res) {
+                _this2.dataForm = {};
+                _this2.fetchKalpenList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpEditKalpen: function popUpEditKalpen(RecID) {
+            var _this3 = this;
+
+            axios.get('api/kalpen/' + RecID).then(function (res) {
+                _this3.primaryModal = true;
+                _this3.dataForm = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        editKalpen: function editKalpen(RecID) {
+            var _this4 = this;
+
+            if (RecID && RecID !== "") {
+                axios.put('api/kalpen/' + RecID, this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchKalpenList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            } else {
+                axios.post('api/kalpen', this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchKalpenList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            }
+        },
+        popUpDeleteKalpen: function popUpDeleteKalpen(task) {
+            this.dataForm = task;
+            this.deleteModal = true;
+        },
+        deleteKalpen: function deleteKalpen(RecID) {
+            var _this5 = this;
+
+            axios.delete('api/kalpen/' + RecID).then(function (res) {
+                _this5.dataForm = {};
+                _this5.deleteModal = false;
+                _this5.fetchKalpenList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        }
     }
-  }
 });
 
 /***/ }),
@@ -59808,111 +59808,128 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'modals',
-  components: {
-    modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-    formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
-    bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
-  },
-  data: function data() {
-    return {
-      valid: false,
-      keyword: '',
-      primaryModal: false,
-      deleteModal: false,
-      list: [],
-      dataForm: {
-        id: '',
-        nmfile: '',
-        keterangan: ''
-      },
-      pagination: {
-        total: 0,
-        per_page: 10,
-        from: 1,
-        to: 0,
-        current_page: 1
-      }
-    };
-  },
-  created: function created() {
-    this.fetchKetelaList();
-  },
-
-
-  methods: {
-    fetchKetelaList: function fetchKetelaList(page) {
-      var _this = this;
-
-      axios.get('api/ketela?page=' + page + '&keyword=' + this.keyword).then(function (res) {
-        _this.list = res.data;
-        _this.pagination = res.data.pagination;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    name: 'modals',
+    components: {
+        modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
+        formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
+        bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
     },
-    createKetela: function createKetela() {
-      var _this2 = this;
-
-      axios.post('api/ketela', this.dataForm).then(function (res) {
-        _this2.dataForm = {};
-        _this2.fetchKetelaList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    data: function data() {
+        return {
+            valid: false,
+            keyword: '',
+            primaryModal: false,
+            deleteModal: false,
+            list: [],
+            dataForm: {
+                id: '',
+                nmfile: '',
+                keterangan: ''
+            },
+            pagination: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1
+            }
+        };
     },
-    popUpEditKetela: function popUpEditKetela(id) {
-      var _this3 = this;
-
-      axios.get('api/ketela/' + id).then(function (res) {
-        _this3.primaryModal = true;
-        _this3.dataForm = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    created: function created() {
+        this.fetchKetelaList();
     },
-    editKetela: function editKetela(id) {
-      var _this4 = this;
 
-      if (id && id !== "") {
-        axios.put('api/ketela/' + id, this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchKetelaList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      } else {
-        axios.post('api/ketela', this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchKetelaList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      }
-    },
-    popUpDeleteKetela: function popUpDeleteKetela(task) {
-      this.dataForm = task;
-      this.deleteModal = true;
-    },
-    deleteKetela: function deleteKetela(id) {
-      var _this5 = this;
 
-      axios.delete('api/ketela/' + id).then(function (res) {
-        _this5.dataForm = {};
-        _this5.deleteModal = false;
-        _this5.fetchKetelaList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) {
+                this.dataForm = {};
+            }
+            this.errors.clear();
+        }
+    },
+
+    methods: {
+        fetchKetelaList: function fetchKetelaList(page) {
+            var _this = this;
+
+            axios.get('api/ketela?page=' + page + '&keyword=' + this.keyword).then(function (res) {
+                _this.list = res.data;
+                _this.pagination = res.data.pagination;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        createKetela: function createKetela() {
+            var _this2 = this;
+
+            axios.post('api/ketela', this.dataForm).then(function (res) {
+                _this2.dataForm = {};
+                _this2.fetchKetelaList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpEditKetela: function popUpEditKetela(id) {
+            var _this3 = this;
+
+            axios.get('api/ketela/' + id).then(function (res) {
+                _this3.primaryModal = true;
+                _this3.dataForm = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        editKetela: function editKetela(id) {
+            var _this4 = this;
+
+            if (id && id !== "") {
+                axios.put('api/ketela/' + id, this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchKetelaList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            } else {
+                axios.post('api/ketela', this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchKetelaList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            }
+        },
+        popUpDeleteKetela: function popUpDeleteKetela(task) {
+            this.dataForm = task;
+            this.deleteModal = true;
+        },
+        deleteKetela: function deleteKetela(id) {
+            var _this5 = this;
+
+            axios.delete('api/ketela/' + id).then(function (res) {
+                _this5.dataForm = {};
+                _this5.deleteModal = false;
+                _this5.fetchKetelaList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        }
     }
-  }
 });
 
 /***/ }),
@@ -60052,135 +60069,150 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'modals',
-  components: {
-    modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-    formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
-    bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
-  },
-  data: function data() {
-    return {
-      valid: false,
-      keyword: '',
-      primaryModal: false,
-      deleteModal: false,
-      list: [],
-      dataForm: {
-        idpikse: '',
-        file: '',
-        keterangan: ''
-      },
-      listJenjang: [],
-      listKurikulum: [],
-      pagination: {
-        total: 0,
-        per_page: 10,
-        from: 1,
-        to: 0,
-        current_page: 1
-      }
-    };
-  },
-  created: function created() {
-    this.fetchPikseList();
-    this.getJenjang();
-    this.getKurikulum();
-  },
-
-
-  methods: {
-    fetchPikseList: function fetchPikseList(page) {
-      var _this = this;
-
-      axios.get('api/pikse?page=' + page + '&keyword=' + this.keyword).then(function (res) {
-        _this.list = res.data;
-        _this.pagination = res.data.pagination;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    name: 'modals',
+    components: {
+        modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
+        formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
+        bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
     },
-    createPikse: function createPikse() {
-      var _this2 = this;
-
-      axios.post('api/pikse', this.dataForm).then(function (res) {
-        _this2.dataForm = {};
-        _this2.fetchPikseList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    data: function data() {
+        return {
+            valid: false,
+            keyword: '',
+            primaryModal: false,
+            deleteModal: false,
+            list: [],
+            dataForm: {
+                idpikse: '',
+                file: '',
+                keterangan: ''
+            },
+            listJenjang: [],
+            listKurikulum: [],
+            pagination: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1
+            }
+        };
     },
-    popUpEditPikse: function popUpEditPikse(id) {
-      var _this3 = this;
-
-      axios.get('api/pikse/' + id).then(function (res) {
-        _this3.primaryModal = true;
-        _this3.dataForm = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    created: function created() {
+        this.fetchPikseList();
+        this.getJenjang();
+        this.getKurikulum();
     },
-    popUpDeletePikse: function popUpDeletePikse(task) {
-      this.dataForm = task;
-      this.deleteModal = true;
-    },
-    editPikse: function editPikse(id) {
-      var _this4 = this;
 
-      if (id && id !== "") {
-        axios.put('api/pikse/' + id, this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchPikseList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      } else {
-        axios.post('api/pikse', this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchPikseList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      }
-    },
-    deletePikse: function deletePikse(id) {
-      var _this5 = this;
 
-      axios.delete('api/pikse/' + id).then(function (res) {
-        _this5.deleteModal = false;
-        _this5.dataForm = {};
-        _this5.fetchPikseList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) {
+                this.dataForm = {};
+            }
+            this.errors.clear();
+        }
     },
-    getJenjang: function getJenjang() {
-      var _this6 = this;
 
-      axios.get('api/jenjang/').then(function (res) {
-        _this6.listJenjang = res.data;
-        console.log(_this6.listJenjang);
-      }).catch(function (err) {
-        return console.error(err);
-      });
-    },
-    getKurikulum: function getKurikulum() {
-      var _this7 = this;
+    methods: {
+        fetchPikseList: function fetchPikseList(page) {
+            var _this = this;
 
-      axios.get('api/kurikulum/').then(function (res) {
-        _this7.listKurikulum = res.data;
-        console.log(_this7.listKurikulum);
-      }).catch(function (err) {
-        return console.error(err);
-      });
+            axios.get('api/pikse?page=' + page + '&keyword=' + this.keyword).then(function (res) {
+                _this.list = res.data;
+                _this.pagination = res.data.pagination;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        createPikse: function createPikse() {
+            var _this2 = this;
+
+            axios.post('api/pikse', this.dataForm).then(function (res) {
+                _this2.dataForm = {};
+                _this2.fetchPikseList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpEditPikse: function popUpEditPikse(id) {
+            var _this3 = this;
+
+            axios.get('api/pikse/' + id).then(function (res) {
+                _this3.primaryModal = true;
+                _this3.dataForm = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpDeletePikse: function popUpDeletePikse(task) {
+            this.dataForm = task;
+            this.deleteModal = true;
+        },
+        editPikse: function editPikse(id) {
+            var _this4 = this;
+
+            if (id && id !== "") {
+                axios.put('api/pikse/' + id, this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchPikseList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            } else {
+                axios.post('api/pikse', this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchPikseList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            }
+        },
+        deletePikse: function deletePikse(id) {
+            var _this5 = this;
+
+            axios.delete('api/pikse/' + id).then(function (res) {
+                _this5.deleteModal = false;
+                _this5.dataForm = {};
+                _this5.fetchPikseList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        getJenjang: function getJenjang() {
+            var _this6 = this;
+
+            axios.get('api/jenjang/').then(function (res) {
+                _this6.listJenjang = res.data;
+                console.log(_this6.listJenjang);
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        getKurikulum: function getKurikulum() {
+            var _this7 = this;
+
+            axios.get('api/kurikulum/').then(function (res) {
+                _this7.listKurikulum = res.data;
+                console.log(_this7.listKurikulum);
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        }
     }
-  }
 });
 
 /***/ }),
@@ -60292,111 +60324,128 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'modals',
-  components: {
-    modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-    formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
-    bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
-  },
-  data: function data() {
-    return {
-      valid: false,
-      keyword: '',
-      primaryModal: false,
-      deleteModal: false,
-      list: [],
-      dataForm: {
-        id: '',
-        nmfile: '',
-        keterangan: ''
-      },
-      pagination: {
-        total: 0,
-        per_page: 10,
-        from: 1,
-        to: 0,
-        current_page: 1
-      }
-    };
-  },
-  created: function created() {
-    this.fetchRumusList();
-  },
-
-
-  methods: {
-    fetchRumusList: function fetchRumusList(page) {
-      var _this = this;
-
-      axios.get('api/rumus?page=' + page + '&keyword=' + this.keyword).then(function (res) {
-        _this.list = res.data;
-        _this.pagination = res.data.pagination;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    name: 'modals',
+    components: {
+        modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
+        formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
+        bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
     },
-    createRumus: function createRumus() {
-      var _this2 = this;
-
-      axios.post('api/rumus', this.dataForm).then(function (res) {
-        _this2.dataForm = {};
-        _this2.fetchRumusList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    data: function data() {
+        return {
+            valid: false,
+            keyword: '',
+            primaryModal: false,
+            deleteModal: false,
+            list: [],
+            dataForm: {
+                id: '',
+                nmfile: '',
+                keterangan: ''
+            },
+            pagination: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1
+            }
+        };
     },
-    popUpEditRumus: function popUpEditRumus(id) {
-      var _this3 = this;
-
-      axios.get('api/rumus/' + id).then(function (res) {
-        _this3.primaryModal = true;
-        _this3.dataForm = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    created: function created() {
+        this.fetchRumusList();
     },
-    editRumus: function editRumus(id) {
-      var _this4 = this;
 
-      if (id && id !== "") {
-        axios.put('api/rumus/' + id, this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchRumusList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      } else {
-        axios.post('api/rumus', this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchRumusList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      }
-    },
-    popUpDeleteRumus: function popUpDeleteRumus(task) {
-      this.dataForm = task;
-      this.deleteModal = true;
-    },
-    deleteRumus: function deleteRumus(id) {
-      var _this5 = this;
 
-      axios.delete('api/rumus/' + id).then(function (res) {
-        _this5.dataForm = {};
-        _this5.deleteModal = false;
-        _this5.fetchRumusList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) {
+                this.dataForm = {};
+            }
+            this.errors.clear();
+        }
+    },
+
+    methods: {
+        fetchRumusList: function fetchRumusList(page) {
+            var _this = this;
+
+            axios.get('api/rumus?page=' + page + '&keyword=' + this.keyword).then(function (res) {
+                _this.list = res.data;
+                _this.pagination = res.data.pagination;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        createRumus: function createRumus() {
+            var _this2 = this;
+
+            axios.post('api/rumus', this.dataForm).then(function (res) {
+                _this2.dataForm = {};
+                _this2.fetchRumusList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpEditRumus: function popUpEditRumus(id) {
+            var _this3 = this;
+
+            axios.get('api/rumus/' + id).then(function (res) {
+                _this3.primaryModal = true;
+                _this3.dataForm = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        editRumus: function editRumus(id) {
+            var _this4 = this;
+
+            if (id && id !== "") {
+                axios.put('api/rumus/' + id, this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchRumusList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            } else {
+                axios.post('api/rumus', this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchRumusList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            }
+        },
+        popUpDeleteRumus: function popUpDeleteRumus(task) {
+            this.dataForm = task;
+            this.deleteModal = true;
+        },
+        deleteRumus: function deleteRumus(id) {
+            var _this5 = this;
+
+            axios.delete('api/rumus/' + id).then(function (res) {
+                _this5.dataForm = {};
+                _this5.deleteModal = false;
+                _this5.fetchRumusList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        }
     }
-  }
 });
 
 /***/ }),
@@ -60522,133 +60571,150 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'modals',
-  components: {
-    modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-    formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
-    bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
-  },
-  data: function data() {
-    return {
-      valid: false,
-      keyword: '',
-      primaryModal: false,
-      deleteModal: false,
-      list: [],
-      dataForm: {
-        RecID: '',
-        propinsi: '',
-        kota: '',
-        asal_sekolah: ''
-      },
-      listPropinsi: [],
-      listKota: [],
-      pagination: {
-        total: 0,
-        per_page: 10,
-        from: 1,
-        to: 0,
-        current_page: 1
-      }
-    };
-  },
-  created: function created() {
-    this.fetchSekolahList();
-    this.getPropinsi();
-  },
-
-
-  methods: {
-    fetchSekolahList: function fetchSekolahList(page) {
-      var _this = this;
-
-      axios.get('api/sekolah?page=' + page + '&keyword=' + this.keyword).then(function (res) {
-        _this.list = res.data;
-        _this.pagination = res.data.pagination;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    name: 'modals',
+    components: {
+        modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
+        formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
+        bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
     },
-    createSekolah: function createSekolah() {
-      var _this2 = this;
-
-      axios.post('api/sekolah', this.dataForm).then(function (res) {
-        _this2.dataForm = {};
-        _this2.fetchSekolahList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    data: function data() {
+        return {
+            valid: false,
+            keyword: '',
+            primaryModal: false,
+            deleteModal: false,
+            list: [],
+            dataForm: {
+                RecID: '',
+                propinsi: '',
+                kota: '',
+                asal_sekolah: ''
+            },
+            listPropinsi: [],
+            listKota: [],
+            pagination: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1
+            }
+        };
     },
-    popUpEditSekolah: function popUpEditSekolah(id) {
-      var _this3 = this;
-
-      axios.get('api/sekolah/' + id).then(function (res) {
-        _this3.primaryModal = true;
-        _this3.dataForm = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    created: function created() {
+        this.fetchSekolahList();
+        this.getPropinsi();
+        this.getKota();
     },
-    popUpDeleteSekolah: function popUpDeleteSekolah(task) {
-      this.dataForm = task;
-      this.deleteModal = true;
-    },
-    editSekolah: function editSekolah(id) {
-      var _this4 = this;
 
-      if (id && id !== "") {
-        axios.put('api/sekolah/' + id, this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchSekolahList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      } else {
-        axios.post('api/sekolah', this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchSekolahList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      }
-    },
-    deleteSekolah: function deleteSekolah(id) {
-      var _this5 = this;
 
-      axios.delete('api/sekolah/' + id).then(function (res) {
-        _this5.deleteModal = false;
-        _this5.dataForm = {};
-        _this5.fetchSekolahList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) this.dataForm = {};
+        }
     },
-    getPropinsi: function getPropinsi() {
-      var _this6 = this;
+    methods: {
+        fetchSekolahList: function fetchSekolahList(page) {
+            var _this = this;
 
-      axios.get('api/propinsi/').then(function (res) {
-        _this6.listPropinsi = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
-    },
-    getKota: function getKota() {
-      var _this7 = this;
+            axios.get('api/sekolah?page=' + page + '&keyword=' + this.keyword).then(function (res) {
+                _this.list = res.data;
+                _this.pagination = res.data.pagination;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        createSekolah: function createSekolah() {
+            var _this2 = this;
 
-      axios.get('api/kota?propinsi=' + this.dataForm.propinsi).then(function (res) {
-        _this7.listKota = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+            axios.post('api/sekolah', this.dataForm).then(function (res) {
+                _this2.dataForm = {};
+                _this2.fetchSekolahList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpEditSekolah: function popUpEditSekolah(id) {
+            var _this3 = this;
+
+            axios.get('api/sekolah/' + id).then(function (res) {
+                _this3.primaryModal = true;
+                _this3.dataForm = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpDeleteSekolah: function popUpDeleteSekolah(task) {
+            this.dataForm = task;
+            this.deleteModal = true;
+        },
+        editSekolah: function editSekolah(id) {
+            var _this4 = this;
+
+            if (id && id !== "") {
+                axios.put('api/sekolah/' + id, this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchSekolahList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            } else {
+                axios.post('api/sekolah', this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchSekolahList();
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            }
+        },
+        deleteSekolah: function deleteSekolah(id) {
+            var _this5 = this;
+
+            axios.delete('api/sekolah/' + id).then(function (res) {
+                _this5.deleteModal = false;
+                _this5.dataForm = {};
+                _this5.fetchSekolahList();
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        getPropinsi: function getPropinsi() {
+            var _this6 = this;
+
+            axios.get('api/propinsi/').then(function (res) {
+                _this6.listPropinsi = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        getKota: function getKota() {
+            var _this7 = this;
+
+            axios.get('api/kota?propinsi=' + this.dataForm.propinsi).then(function (res) {
+                _this7.listKota = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        }
     }
-  }
 });
 
 /***/ }),
@@ -60659,12 +60725,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_UploadFile__ = __webpack_require__(496);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_UploadFile___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_UploadFile__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_strap__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_strap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vue_strap__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_toastr__ = __webpack_require__(476);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_toastr__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_toastr__ = __webpack_require__(476);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_toastr__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_UploadFile__ = __webpack_require__(496);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_UploadFile___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_UploadFile__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_DeleteBtn__ = __webpack_require__(491);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_DeleteBtn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_DeleteBtn__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Pagination__ = __webpack_require__(560);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Pagination___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Pagination__);
 //
 //
 //
@@ -60790,24 +60858,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 
 
@@ -60815,13 +60866,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: 'modals',
+    name: 'Smartebook',
     components: {
         modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-        formValidator: __WEBPACK_IMPORTED_MODULE_2_vue_strap__["formValidator"],
-        bsInput: __WEBPACK_IMPORTED_MODULE_2_vue_strap__["input"],
-        toastr: __WEBPACK_IMPORTED_MODULE_3_toastr___default.a,
-        UploadFile: __WEBPACK_IMPORTED_MODULE_1__components_UploadFile___default.a
+        toastr: __WEBPACK_IMPORTED_MODULE_1_toastr___default.a,
+        UploadFile: __WEBPACK_IMPORTED_MODULE_2__components_UploadFile___default.a,
+        DeleteBtn: __WEBPACK_IMPORTED_MODULE_3__components_DeleteBtn___default.a,
+        Pagination: __WEBPACK_IMPORTED_MODULE_4__components_Pagination___default.a
     },
     data: function data() {
         return {
@@ -60857,6 +60908,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
 
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) {
+                this.dataForm = {};
+            }
+            this.errors.clear();
+        }
+    },
+
     methods: {
         onFileChange: function onFileChange(e) {
             if (e) {
@@ -60875,7 +60935,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                 var reader = new FileReader();
                 reader.onloadend = function (event) {
-                    //event.target.result;
                     vm.dataForm.myFile.uploadFile = event.target.result;
                     vm.ready = true;
                 };
@@ -60886,7 +60945,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         fetchSmartebookList: function fetchSmartebookList(page) {
             var _this = this;
 
-            //toastr.success('Create successfully');
             axios.get('api/smartebook?page=' + page + '&keyword=' + this.keyword).then(function (res) {
                 _this.list = res.data;
                 _this.pagination = res.data.pagination;
@@ -60894,33 +60952,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return console.error(err);
             });
         },
-        createSmartebook: function createSmartebook() {
+        popUpEditSmartebook: function popUpEditSmartebook(id) {
             var _this2 = this;
 
-            axios.post('api/smartebook', this.dataForm).then(function (res) {
-                __WEBPACK_IMPORTED_MODULE_3_toastr___default.a.success('Create successfully');
-                _this2.dataForm = {};
-                _this2.fetchSmartebookList();
-            }).catch(function (err) {
-                debugger;
-                console.log("err");
-            });
-        },
-        popUpEditSmartebook: function popUpEditSmartebook(id) {
-            var _this3 = this;
-
             axios.get('api/smartebook/' + id).then(function (res) {
-                _this3.primaryModal = true;
-                _this3.dataForm = res.data;
+                _this2.primaryModal = true;
+                _this2.dataForm = res.data;
             }).catch(function (err) {
                 return console.error(err);
             });
         },
-        popUpDeleteSmartebook: function popUpDeleteSmartebook(task) {
-            this.dataForm = task;
-            this.deleteModal = true;
+        vaidateForm: function vaidateForm(id) {
+            var _this3 = this;
+
+            this.$validator.validateAll().then(function (result) {
+                if (result) {
+                    _this3.editSmartebook(id);
+                } else {
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.error('Ada Field Yang Belum Diisi!');
+                }
+            });
         },
-        uploadFile: function uploadFile(id) {},
         editSmartebook: function editSmartebook(id) {
             var _this4 = this;
 
@@ -60929,6 +60981,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this4.primaryModal = false;
                     _this4.dataForm = {};
                     _this4.fetchSmartebookList();
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Ubah');
                 }).catch(function (err) {
                     return console.error(err);
                 });
@@ -60937,6 +60990,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this4.primaryModal = false;
                     _this4.dataForm = {};
                     _this4.fetchSmartebookList();
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Tambah');
                 }).catch(function (err) {
                     return console.error(err);
                 });
@@ -60949,7 +61003,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this5.deleteModal = false;
                 _this5.dataForm = {};
                 _this5.fetchSmartebookList();
-                __WEBPACK_IMPORTED_MODULE_3_toastr___default.a.success('Book removed successfully');
+                __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Hapus');
             }).catch(function (err) {
                 return console.error(err);
             });
@@ -60983,8 +61037,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_strap__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_strap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_strap__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_toastr__ = __webpack_require__(476);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_toastr__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_DeleteBtn__ = __webpack_require__(491);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_DeleteBtn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_DeleteBtn__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Pagination__ = __webpack_require__(560);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Pagination___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Pagination__);
 //
 //
 //
@@ -61100,147 +61158,145 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'modals',
-  components: {
-    modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-    formValidator: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["formValidator"],
-    bsInput: __WEBPACK_IMPORTED_MODULE_1_vue_strap__["input"]
-  },
-  data: function data() {
-    return {
-      valid: false,
-      keyword: '',
-      primaryModal: false,
-      deleteModal: false,
-      list: [],
-      dataForm: {
-        idse: '',
-        file: '',
-        keterangan: ''
-      },
-      listJenjang: [],
-      listKurikulum: [],
-      pagination: {
-        total: 0,
-        per_page: 10,
-        from: 1,
-        to: 0,
-        current_page: 1
-      }
-    };
-  },
-  created: function created() {
-    this.fetchSmartexerciseList();
-    this.getJenjang();
-    this.getKurikulum();
-  },
-
-
-  methods: {
-    fetchSmartexerciseList: function fetchSmartexerciseList(page) {
-      var _this = this;
-
-      axios.get('api/smartexercise?page=' + page + '&keyword=' + this.keyword).then(function (res) {
-        _this.list = res.data;
-        _this.pagination = res.data.pagination;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    name: 'Smartexercise',
+    components: {
+        modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
+        toastr: __WEBPACK_IMPORTED_MODULE_1_toastr___default.a,
+        DeleteBtn: __WEBPACK_IMPORTED_MODULE_2__components_DeleteBtn___default.a,
+        Pagination: __WEBPACK_IMPORTED_MODULE_3__components_Pagination___default.a
     },
-    createSmartexercise: function createSmartexercise() {
-      var _this2 = this;
-
-      axios.post('api/smartexercise', this.dataForm).then(function (res) {
-        _this2.dataForm = {};
-        _this2.fetchSmartexerciseList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    data: function data() {
+        return {
+            valid: false,
+            keyword: '',
+            primaryModal: false,
+            deleteModal: false,
+            list: [],
+            dataForm: {
+                idse: '',
+                file: '',
+                keterangan: ''
+            },
+            listJenjang: [],
+            listKurikulum: [],
+            pagination: {
+                total: 0,
+                per_page: 10,
+                from: 1,
+                to: 0,
+                current_page: 1
+            }
+        };
     },
-    popUpEditSmartexercise: function popUpEditSmartexercise(id) {
-      var _this3 = this;
-
-      axios.get('api/smartexercise/' + id).then(function (res) {
-        _this3.primaryModal = true;
-        _this3.dataForm = res.data;
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    created: function created() {
+        this.fetchSmartexerciseList();
+        this.getJenjang();
+        this.getKurikulum();
     },
-    popUpDeleteSmartexercise: function popUpDeleteSmartexercise(task) {
-      this.dataForm = task;
-      this.deleteModal = true;
-    },
-    editSmartexercise: function editSmartexercise(id) {
-      var _this4 = this;
 
-      if (id && id !== "") {
-        axios.put('api/smartexercise/' + id, this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchSmartexerciseList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      } else {
-        axios.post('api/smartexercise', this.dataForm).then(function (res) {
-          _this4.primaryModal = false;
-          _this4.dataForm = {};
-          _this4.fetchSmartexerciseList();
-        }).catch(function (err) {
-          return console.error(err);
-        });
-      }
-    },
-    deleteSmartexercise: function deleteSmartexercise(id) {
-      var _this5 = this;
 
-      axios.delete('api/smartexercise/' + id).then(function (res) {
-        _this5.deleteModal = false;
-        _this5.dataForm = {};
-        _this5.fetchSmartexerciseList();
-      }).catch(function (err) {
-        return console.error(err);
-      });
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) {
+                this.dataForm = {};
+            }
+            this.errors.clear();
+        }
     },
-    getJenjang: function getJenjang() {
-      var _this6 = this;
 
-      axios.get('api/jenjang/').then(function (res) {
-        _this6.listJenjang = res.data;
-        console.log(_this6.listJenjang);
-      }).catch(function (err) {
-        return console.error(err);
-      });
-    },
-    getKurikulum: function getKurikulum() {
-      var _this7 = this;
+    methods: {
+        fetchSmartexerciseList: function fetchSmartexerciseList(page) {
+            var _this = this;
 
-      axios.get('api/kurikulum/').then(function (res) {
-        _this7.listKurikulum = res.data;
-        console.log(_this7.listKurikulum);
-      }).catch(function (err) {
-        return console.error(err);
-      });
+            axios.get('api/smartexercise?page=' + page + '&keyword=' + this.keyword).then(function (res) {
+                _this.list = res.data;
+                _this.pagination = res.data.pagination;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        popUpEditSmartexercise: function popUpEditSmartexercise(id) {
+            var _this2 = this;
+
+            axios.get('api/smartexercise/' + id).then(function (res) {
+                _this2.primaryModal = true;
+                _this2.dataForm = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        vaidateForm: function vaidateForm(id) {
+            var _this3 = this;
+
+            this.$validator.validateAll().then(function (result) {
+                if (result) {
+                    _this3.editSmartexercise(id);
+                } else {
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.error('Ada Field Yang Belum Diisi!');
+                }
+            });
+        },
+        editSmartexercise: function editSmartexercise(id) {
+            var _this4 = this;
+
+            if (id && id !== "") {
+                axios.put('api/smartexercise/' + id, this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchSmartexerciseList();
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Ubah');
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            } else {
+                axios.post('api/smartexercise', this.dataForm).then(function (res) {
+                    _this4.primaryModal = false;
+                    _this4.dataForm = {};
+                    _this4.fetchSmartexerciseList();
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Simpan');
+                }).catch(function (err) {
+                    return console.error(err);
+                });
+            }
+        },
+        deleteSmartexercise: function deleteSmartexercise(id) {
+            var _this5 = this;
+
+            axios.delete('api/smartexercise/' + id).then(function (res) {
+                _this5.deleteModal = false;
+                _this5.dataForm = {};
+                _this5.fetchSmartexerciseList();
+                __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Delete');
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        getJenjang: function getJenjang() {
+            var _this6 = this;
+
+            axios.get('api/jenjang/').then(function (res) {
+                _this6.listJenjang = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        },
+        getKurikulum: function getKurikulum() {
+            var _this7 = this;
+
+            axios.get('api/kurikulum/').then(function (res) {
+                _this7.listKurikulum = res.data;
+            }).catch(function (err) {
+                return console.error(err);
+            });
+        }
     }
-  }
 });
 
 /***/ }),
@@ -61251,10 +61307,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_DeleteBtn__ = __webpack_require__(491);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_DeleteBtn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_DeleteBtn__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_strap__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_strap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vue_strap__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_toastr__ = __webpack_require__(476);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_toastr__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_DeleteBtn__ = __webpack_require__(491);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_DeleteBtn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_DeleteBtn__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Pagination__ = __webpack_require__(560);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Pagination___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Pagination__);
 //
 //
 //
@@ -61337,46 +61395,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: 'modals',
+    name: 'TipsNTrik',
     components: {
         modal: __WEBPACK_IMPORTED_MODULE_0_vue_strap_src_Modal___default.a,
-        formValidator: __WEBPACK_IMPORTED_MODULE_2_vue_strap__["formValidator"],
-        bsInput: __WEBPACK_IMPORTED_MODULE_2_vue_strap__["input"],
-        DeleteBtn: __WEBPACK_IMPORTED_MODULE_1__components_DeleteBtn___default.a
+        toastr: __WEBPACK_IMPORTED_MODULE_1_toastr___default.a,
+        DeleteBtn: __WEBPACK_IMPORTED_MODULE_2__components_DeleteBtn___default.a,
+        Pagination: __WEBPACK_IMPORTED_MODULE_3__components_Pagination___default.a
     },
     data: function data() {
         return {
@@ -61403,6 +61434,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.fetchMititiList();
     },
 
+
+    watch: {
+        primaryModal: function primaryModal(val) {
+            if (!val) {
+                this.dataForm = {};
+            }
+            this.errors.clear();
+        }
+    },
 
     methods: {
         fetchMititiList: function fetchMititiList(page) {
@@ -61431,8 +61471,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$validator.validateAll().then(function (result) {
                 if (result) {
                     _this3.editMititi(id);
+                } else {
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.error('Ada Field Yang Belum Diisi!');
                 }
-                alert('Correct them errors!');
             });
         },
         editMititi: function editMititi(id) {
@@ -61443,6 +61484,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this4.primaryModal = false;
                     _this4.dataForm = {};
                     _this4.fetchMititiList();
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Ubah');
                 }).catch(function (err) {
                     return console.error(err);
                 });
@@ -61451,14 +61493,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this4.primaryModal = false;
                     _this4.dataForm = {};
                     _this4.fetchMititiList();
+                    __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Simpan');
                 }).catch(function (err) {
                     console.log("err");
                 });
             }
-        },
-        popUpDeleteMititi: function popUpDeleteMititi(task) {
-            this.dataForm = task;
-            this.deleteModal = true;
         },
         deleteMititi: function deleteMititi(id) {
             var _this5 = this;
@@ -61467,6 +61506,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this5.dataForm = {};
                 _this5.deleteModal = false;
                 _this5.fetchMititiList();
+                __WEBPACK_IMPORTED_MODULE_1_toastr___default.a.success('Data Berhasil Di Delete');
             }).catch(function (err) {
                 return console.error(err);
             });
@@ -109324,66 +109364,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-edit"
-    })]), _vm._v(" "), _c('button', {
-      staticClass: "btn btn-danger btn-xs",
-      on: {
-        "click": function($event) {
-          _vm.popUpDeleteSmartebook(task)
-        }
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-trash"
-    })])])])
-  }))]), _vm._v(" "), _c('nav', [_c('ul', {
-    staticClass: "pagination"
-  }, [(_vm.pagination.current_page > 1) ? _c('li', {
-    staticClass: "page-item"
-  }, [_c('a', {
-    staticClass: "page-link",
-    attrs: {
-      "href": "javascript:;"
-    },
-    on: {
-      "click": function($event) {
-        _vm.fetchSmartebookList(_vm.pagination.current_page - 1)
-      }
-    }
-  }, [_vm._v("Prev")])]) : _vm._e(), _vm._v(" "), _vm._l((_vm.pagination.last_page), function(page, index) {
-    return _c('li', {
-      key: page.index,
-      class: [page == _vm.pagination.current_page ? 'active' : '']
-    }, [_c('a', {
+    })]), _vm._v(" "), _c('delete-btn', {
       attrs: {
-        "href": "javascript:;"
-      },
-      on: {
-        "click": function($event) {
-          _vm.fetchSmartebookList(page)
-        }
+        "okFunc": _vm.deleteSmartebook.bind(null, task.idsb)
       }
-    }, [_vm._v(_vm._s(page))])])
-  }), _vm._v(" "), (_vm.pagination.current_page < _vm.pagination.last_page) ? _c('li', {
-    staticClass: "page-item"
-  }, [_c('a', {
-    staticClass: "page-link",
+    })], 1)])
+  }))]), _vm._v(" "), _c('Pagination', {
     attrs: {
-      "href": "javascript:;"
-    },
-    on: {
-      "click": function($event) {
-        _vm.fetchSmartebookList(_vm.pagination.current_page + 1)
-      }
+      "pagination": _vm.pagination,
+      "fetchFunc": _vm.fetchSmartebookList
     }
-  }, [_vm._v("Next")])]) : _vm._e()], 2)])])])]), _vm._v(" "), _c('modal', {
+  })], 1)])]), _vm._v(" "), _c('modal', {
     staticClass: "modal-primary",
     attrs: {
       "title": "Modal title",
       "effect": "fade/zoom"
-    },
-    on: {
-      "ok": function($event) {
-        _vm.uploadFile(_vm.dataForm.idsb)
-      }
     },
     model: {
       value: (_vm.primaryModal),
@@ -109410,6 +109405,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("File")]), _vm._v(" "), _c('input', {
     directives: [{
+      name: "validate",
+      rawName: "v-validate",
+      value: ('required'),
+      expression: "'required'"
+    }, {
       name: "model",
       rawName: "v-model",
       value: (_vm.dataForm.nmfile),
@@ -109417,12 +109417,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "form-control",
     attrs: {
+      "name": "file",
       "type": "text",
-      "id": "firstname",
-      "name": "firstname",
       "value": "{ dataForm.nmfile }",
-      "placeholder": "Masukan Nama",
-      "required": ""
+      "placeholder": "Masukan File"
     },
     domProps: {
       "value": (_vm.dataForm.nmfile)
@@ -109433,7 +109431,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.dataForm.nmfile = $event.target.value
       }
     }
-  })]), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.errors.has('file')),
+      expression: "errors.has('file')"
+    }],
+    staticClass: "help-block"
+  }, [_vm._v("file diperlukan")])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     attrs: {
@@ -109441,6 +109447,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Keterangan")]), _vm._v(" "), _c('input', {
     directives: [{
+      name: "validate",
+      rawName: "v-validate",
+      value: ('required'),
+      expression: "'required'"
+    }, {
       name: "model",
       rawName: "v-model",
       value: (_vm.dataForm.keterangan),
@@ -109448,6 +109459,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "form-control",
     attrs: {
+      "name": "keterangan",
       "type": "text",
       "value": "{ dataForm.keterangan }",
       "placeholder": "Masukan Keterangan"
@@ -109461,20 +109473,39 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.dataForm.keterangan = $event.target.value
       }
     }
-  })]), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.errors.has('keterangan')),
+      expression: "errors.has('keterangan')"
+    }],
+    staticClass: "help-block"
+  }, [_vm._v("keterangan diperlukan")])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     attrs: {
       "for": "company"
     }
-  }, [_vm._v("Jenjang 1")]), _vm._v(" "), _c('select', {
+  }, [_vm._v("Jenjang")]), _vm._v(" "), _c('select', {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: (_vm.dataForm.jenjang),
-      expression: "dataForm.jenjang "
+      expression: "dataForm.jenjang"
+    }, {
+      name: "validate",
+      rawName: "v-validate.initial",
+      value: ('required'),
+      expression: "'required'",
+      modifiers: {
+        "initial": true
+      }
     }],
     staticClass: "form-control",
+    attrs: {
+      "name": "jenjang"
+    },
     on: {
       "change": function($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
@@ -109494,7 +109525,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "selected": cat.index == _vm.dataForm.jenjang
       }
     }, [_vm._v("\n                            " + _vm._s(cat.NamaJenjang) + "\n                        ")])
-  }))]), _vm._v(" "), _c('div', {
+  })), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.errors.has('jenjang')),
+      expression: "errors.has('jenjang')"
+    }],
+    staticClass: "help-block"
+  }, [_vm._v("jenjang diperlukan")])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     attrs: {
@@ -109561,9 +109600,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "myFile": _vm.dataForm.myFile,
       "onFileChange": _vm.onFileChange
-    },
-    on: {
-      "change": _vm.onFileChange
     }
   })], 1)])]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer",
@@ -109578,7 +109614,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.dataForm = {};
         _vm.primaryModal = false
       }
     }
@@ -109589,7 +109624,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.editSmartebook(_vm.dataForm.idsb)
+        _vm.vaidateForm(_vm.dataForm.idsb)
       }
     }
   }, [_vm._v("Simpan")]) : _vm._e(), _vm._v(" "), (!_vm.ready) ? _c('button', {
@@ -109599,41 +109634,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('i', {
     staticClass: "fa fa-spinner fa-spin"
-  }), _vm._v(" Loading")]) : _vm._e()])]), _vm._v(" "), _c('modal', {
-    staticClass: "modal-danger",
-    attrs: {
-      "title": "Modal title",
-      "effect": "fade/zoom"
-    },
-    on: {
-      "ok": function($event) {
-        _vm.deleteSmartebook(_vm.dataForm.idsb)
-      }
-    },
-    model: {
-      value: (_vm.deleteModal),
-      callback: function($$v) {
-        _vm.deleteModal = $$v
-      },
-      expression: "deleteModal"
-    }
-  }, [_c('div', {
-    staticClass: "modal-header",
-    attrs: {
-      "slot": "modal-header"
-    },
-    slot: "modal-header"
-  }, [_c('h4', {
-    staticClass: "modal-title"
-  }, [_vm._v("Delete Data")])]), _vm._v(" "), _c('div', {
-    staticClass: "card-block"
-  }, [_c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    attrs: {
-      "for": "company"
-    }
-  }, [_vm._v("Apakah kamu yakin? ")])])])])], 1)
+  }), _vm._v(" Loading")]) : _vm._e()])])], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "card-header"
@@ -109982,7 +109983,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "card-header"
   }, [_c('i', {
     staticClass: "fa fa-align-justify"
-  }), _vm._v(" Kalpen Table\n      ")])
+  }), _vm._v(" Kalpen Table\n            ")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("No")]), _vm._v(" "), _c('th', [_vm._v("Judul")]), _vm._v(" "), _c('th', [_vm._v("Keterangan")]), _vm._v(" "), _c('th', [_vm._v("Tanggal")]), _vm._v(" "), _c('th', [_vm._v("Action")])])])
 }]}
@@ -111006,7 +111007,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": cat.KodeJenjang,
         "selected": cat.index == 0
       }
-    }, [_vm._v("\n                    " + _vm._s(cat.index) + " " + _vm._s(cat.KodeJenjang) + " " + _vm._s(cat.NamaJenjang) + "\n                ")])
+    }, [_vm._v("\n                            " + _vm._s(cat.index) + " " + _vm._s(cat.KodeJenjang) + " " + _vm._s(cat.NamaJenjang) + "\n                        ")])
   }))]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
@@ -111039,7 +111040,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": cat.KodeJenjang,
         "selected": cat.KodeJenjang == _vm.dataForm.jenjang2
       }
-    }, [_vm._v("\n                    " + _vm._s(cat.NamaJenjang) + "\n                ")])
+    }, [_vm._v("\n                            " + _vm._s(cat.NamaJenjang) + "\n                        ")])
   }))]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
@@ -111108,7 +111109,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "card-header"
   }, [_c('i', {
     staticClass: "fa fa-align-justify"
-  }), _vm._v(" Pikse Table\n      ")])
+  }), _vm._v(" Pikse Table\n            ")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("No")]), _vm._v(" "), _c('th', [_vm._v("Nama")]), _vm._v(" "), _c('th', [_vm._v("Keterangan")]), _vm._v(" "), _c('th', [_vm._v("Jenjang 1")]), _vm._v(" "), _c('th', [_vm._v("Jenjang 2")]), _vm._v(" "), _c('th', [_vm._v("Kurikulum")]), _vm._v(" "), _c('th', [_vm._v("Action")])])])
 }]}
@@ -111169,11 +111170,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "title": "Modal title",
       "effect": "fade/zoom"
     },
-    on: {
-      "ok": function($event) {
-        _vm.okFunc(_vm.dataForm.RecID)
-      }
-    },
     model: {
       value: (_vm.deleteModal),
       callback: function($$v) {
@@ -111219,9 +111215,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "type": "submit"
     },
     on: {
-      "click": function($event) {
-        _vm.deleteModal = false
-      }
+      "click": _vm.callFunc
     }
   }, [_vm._v("Ya")])])])], 1)
 },staticRenderFns: []}
@@ -111315,57 +111309,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-edit"
-    })]), _vm._v(" "), _c('button', {
-      staticClass: "btn btn-danger btn-xs",
-      on: {
-        "click": function($event) {
-          _vm.popUpDeleteMititi(task)
-        }
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-trash"
-    })]), _vm._v(" "), _c('delete-btn')], 1)])
-  }))]), _vm._v(" "), _c('nav', [_c('ul', {
-    staticClass: "pagination"
-  }, [(_vm.pagination.current_page > 1) ? _c('li', {
-    staticClass: "page-item"
-  }, [_c('a', {
-    staticClass: "page-link",
-    attrs: {
-      "href": "javascript:;"
-    },
-    on: {
-      "click": function($event) {
-        _vm.fetchMititiList(_vm.pagination.current_page - 1)
-      }
-    }
-  }, [_vm._v("Prev")])]) : _vm._e(), _vm._v(" "), _vm._l((_vm.pagination.last_page), function(page, index) {
-    return _c('li', {
-      key: index,
-      class: [page == _vm.pagination.current_page ? 'active' : '']
-    }, [_c('a', {
+    })]), _vm._v(" "), _c('delete-btn', {
       attrs: {
-        "href": "javascript:;"
-      },
-      on: {
-        "click": function($event) {
-          _vm.fetchMititiList(page)
-        }
+        "okFunc": _vm.deleteMititi.bind(null, task.RecID)
       }
-    }, [_vm._v(_vm._s(page))])])
-  }), _vm._v(" "), (_vm.pagination.current_page < _vm.pagination.last_page) ? _c('li', {
-    staticClass: "page-item"
-  }, [_c('a', {
-    staticClass: "page-link",
+    })], 1)])
+  }))]), _vm._v(" "), _c('Pagination', {
     attrs: {
-      "href": "javascript:;"
-    },
-    on: {
-      "click": function($event) {
-        _vm.fetchMititiList(_vm.pagination.current_page + 1)
-      }
+      "pagination": _vm.pagination,
+      "fetchFunc": _vm.fetchMititiList
     }
-  }, [_vm._v("Next")])]) : _vm._e()], 2)])])])]), _vm._v(" "), _c('modal', {
+  })], 1)])]), _vm._v(" "), _c('modal', {
     staticClass: "modal-primary",
     attrs: {
       "title": "Modal title",
@@ -111490,7 +111444,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "click": function($event) {
-        _vm.dataForm = {};
         _vm.primaryModal = false
       }
     }
@@ -111504,41 +111457,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.vaidateForm(_vm.dataForm.RecID)
       }
     }
-  }, [_vm._v("Simpan")])])]), _vm._v(" "), _c('modal', {
-    staticClass: "modal-danger",
-    attrs: {
-      "title": "Modal title",
-      "effect": "fade/zoom"
-    },
-    on: {
-      "ok": function($event) {
-        _vm.deleteMititi(_vm.dataForm.RecID)
-      }
-    },
-    model: {
-      value: (_vm.deleteModal),
-      callback: function($$v) {
-        _vm.deleteModal = $$v
-      },
-      expression: "deleteModal"
-    }
-  }, [_c('div', {
-    staticClass: "modal-header",
-    attrs: {
-      "slot": "modal-header"
-    },
-    slot: "modal-header"
-  }, [_c('h4', {
-    staticClass: "modal-title"
-  }, [_vm._v("Delete Data")])]), _vm._v(" "), _c('div', {
-    staticClass: "card-block"
-  }, [_c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    attrs: {
-      "for": "company"
-    }
-  }, [_vm._v("Apakah kamu yakin? ")])])])])], 1)
+  }, [_vm._v("Simpan")])])])], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "card-header"
@@ -113402,7 +113321,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "card-header"
   }, [_c('i', {
     staticClass: "fa fa-align-justify"
-  }), _vm._v(" Rumus Table\n      ")])
+  }), _vm._v(" Rumus Table\n            ")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("No")]), _vm._v(" "), _c('th', [_vm._v("File")]), _vm._v(" "), _c('th', [_vm._v("Keterangan")]), _vm._v(" "), _c('th', [_vm._v("Action")])])])
 }]}
@@ -117456,7 +117375,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "card-header"
   }, [_c('i', {
     staticClass: "fa fa-align-justify"
-  }), _vm._v(" Tips N Trik Table\n      ")])
+  }), _vm._v(" Tips N Trik Table\n            ")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("No")]), _vm._v(" "), _c('th', [_vm._v("File")]), _vm._v(" "), _c('th', [_vm._v("Keterangan")]), _vm._v(" "), _c('th', [_vm._v("Action")])])])
 }]}
@@ -117562,7 +117481,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       on: {
         "click": function($event) {
-          _vm.popUpEditSekolah(task.idsb)
+          _vm.popUpEditSekolah(task.RecID)
         }
       }
     }, [_c('i', {
@@ -117623,11 +117542,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "title": "Modal title",
       "effect": "fade/zoom"
     },
-    on: {
-      "ok": function($event) {
-        _vm.editSekolah(_vm.dataForm.idsb)
-      }
-    },
     model: {
       value: (_vm.primaryModal),
       callback: function($$v) {
@@ -117643,7 +117557,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     slot: "modal-header"
   }, [_c('h4', {
     staticClass: "modal-title"
-  }, [_vm._v(_vm._s(_vm.dataForm.idsb ? "Edit Data" : "Tambah Data"))])]), _vm._v(" "), _c('div', {
+  }, [_vm._v(_vm._s(_vm.dataForm.RecID ? "Edit Data" : "Tambah Data"))])]), _vm._v(" "), _c('div', {
     staticClass: "card-block"
   }, [_c('form', [_c('div', {
     staticClass: "form-group has-error"
@@ -117710,7 +117624,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": cat.RecID,
         "selected": cat.index == _vm.dataForm.propinsi
       }
-    }, [_vm._v("\n                    " + _vm._s(cat.NamaPropinsi) + "\n                ")])
+    }, [_vm._v("\n                            " + _vm._s(cat.NamaPropinsi) + "\n                        ")])
   }))]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
@@ -117722,9 +117636,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       name: "model",
       rawName: "v-model",
       value: (_vm.dataForm.kota),
-      expression: "dataForm.kota "
+      expression: "dataForm.kota"
     }],
     staticClass: "form-control",
+    attrs: {
+      "disabled": !_vm.dataForm.propinsi
+    },
     on: {
       "change": function($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
@@ -117741,10 +117658,36 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       key: cat.RecID,
       domProps: {
         "value": cat.RecID,
-        "selected": cat.KodeJenjang == _vm.dataForm.jenjang2
+        "selected": cat.KodeJenjang == _vm.dataForm.kota
       }
-    }, [_vm._v("\n                    " + _vm._s(cat.NamaKotaKab) + "\n                ")])
-  }))])])])]), _vm._v(" "), _c('modal', {
+    }, [_vm._v("\n                            " + _vm._s(cat.NamaKotaKab) + "\n                        ")])
+  }))])])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer",
+    attrs: {
+      "slot": "modal-footer"
+    },
+    slot: "modal-footer"
+  }, [_c('button', {
+    staticClass: "btn btn-default",
+    attrs: {
+      "type": "button"
+    },
+    on: {
+      "click": function($event) {
+        _vm.primaryModal = false
+      }
+    }
+  }, [_vm._v("Tutup")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "submit"
+    },
+    on: {
+      "click": function($event) {
+        _vm.editSekolah(_vm.dataForm.RecID)
+      }
+    }
+  }, [_vm._v("Simpan")])])]), _vm._v(" "), _c('modal', {
     staticClass: "modal-danger",
     attrs: {
       "title": "Modal title",
@@ -117752,7 +117695,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     on: {
       "ok": function($event) {
-        _vm.deleteSekolah(_vm.dataForm.idsb)
+        _vm.deleteSekolah(_vm.dataForm.RecID)
       }
     },
     model: {
@@ -117784,7 +117727,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "card-header"
   }, [_c('i', {
     staticClass: "fa fa-align-justify"
-  }), _vm._v(" Smart Ebook Table\n      ")])
+  }), _vm._v(" Smart Ebook Table\n            ")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("No")]), _vm._v(" "), _c('th', [_vm._v("Asal Sekolah")]), _vm._v(" "), _c('th', [_vm._v("Provinsi")]), _vm._v(" "), _c('th', [_vm._v("Kota / Kab")]), _vm._v(" "), _c('th', [_vm._v("Action")])])])
 }]}
@@ -118286,66 +118229,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-edit"
-    })]), _vm._v(" "), _c('button', {
-      staticClass: "btn btn-danger btn-xs",
-      on: {
-        "click": function($event) {
-          _vm.popUpDeleteSmartexercise(task)
-        }
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-trash"
-    })])])])
-  }))]), _vm._v(" "), _c('nav', [_c('ul', {
-    staticClass: "pagination"
-  }, [(_vm.pagination.current_page > 1) ? _c('li', {
-    staticClass: "page-item"
-  }, [_c('a', {
-    staticClass: "page-link",
-    attrs: {
-      "href": "javascript:;"
-    },
-    on: {
-      "click": function($event) {
-        _vm.fetchSmartexerciseList(_vm.pagination.current_page - 1)
-      }
-    }
-  }, [_vm._v("Prev")])]) : _vm._e(), _vm._v(" "), _vm._l((_vm.pagination.last_page), function(page, index) {
-    return _c('li', {
-      key: page.index,
-      class: [page == _vm.pagination.current_page ? 'active' : '']
-    }, [_c('a', {
+    })]), _vm._v(" "), _c('delete-btn', {
       attrs: {
-        "href": "javascript:;"
-      },
-      on: {
-        "click": function($event) {
-          _vm.fetchSmartexerciseList(page)
-        }
+        "okFunc": _vm.deleteSmartexercise.bind(null, task.idse)
       }
-    }, [_vm._v(_vm._s(page))])])
-  }), _vm._v(" "), (_vm.pagination.current_page < _vm.pagination.last_page) ? _c('li', {
-    staticClass: "page-item"
-  }, [_c('a', {
-    staticClass: "page-link",
+    })], 1)])
+  }))]), _vm._v(" "), _c('Pagination', {
     attrs: {
-      "href": "javascript:;"
-    },
-    on: {
-      "click": function($event) {
-        _vm.fetchSmartexerciseList(_vm.pagination.current_page + 1)
-      }
+      "pagination": _vm.pagination,
+      "fetchFunc": _vm.fetchMititiList
     }
-  }, [_vm._v("Next")])]) : _vm._e()], 2)])])])]), _vm._v(" "), _c('modal', {
+  })], 1)])]), _vm._v(" "), _c('modal', {
     staticClass: "modal-primary",
     attrs: {
       "title": "Modal title",
       "effect": "fade/zoom"
-    },
-    on: {
-      "ok": function($event) {
-        _vm.editSmartexercise(_vm.dataForm.idse)
-      }
     },
     model: {
       value: (_vm.primaryModal),
@@ -118376,9 +118274,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       rawName: "v-model",
       value: (_vm.dataForm.nmfile),
       expression: "dataForm.nmfile"
+    }, {
+      name: "validate",
+      rawName: "v-validate",
+      value: ('required'),
+      expression: "'required'"
     }],
     staticClass: "form-control",
     attrs: {
+      "name": "file",
       "type": "text",
       "value": "{ dataForm.nmfile }",
       "placeholder": "Masukan Nama",
@@ -118393,7 +118297,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.dataForm.nmfile = $event.target.value
       }
     }
-  })]), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.errors.has('file')),
+      expression: "errors.has('file')"
+    }],
+    staticClass: "help-block"
+  }, [_vm._v("file diperlukan")])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     attrs: {
@@ -118405,9 +118317,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       rawName: "v-model",
       value: (_vm.dataForm.keterangan),
       expression: "dataForm.keterangan"
+    }, {
+      name: "validate",
+      rawName: "v-validate",
+      value: ('required'),
+      expression: "'required'"
     }],
     staticClass: "form-control",
     attrs: {
+      "name": "keterangan",
       "type": "text",
       "value": "{ dataForm.keterangan }",
       "placeholder": "Masukan Keterangan"
@@ -118421,7 +118339,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.dataForm.keterangan = $event.target.value
       }
     }
-  })]), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.errors.has('keterangan')),
+      expression: "errors.has('keterangan')"
+    }],
+    staticClass: "help-block"
+  }, [_vm._v("keterangan diperlukan")])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     attrs: {
@@ -118433,8 +118359,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       rawName: "v-model",
       value: (_vm.dataForm.jenjang),
       expression: "dataForm.jenjang "
+    }, {
+      name: "validate",
+      rawName: "v-validate",
+      value: ('required'),
+      expression: "'required'"
     }],
     staticClass: "form-control",
+    attrs: {
+      "name": "jenjang"
+    },
     on: {
       "change": function($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
@@ -118453,8 +118387,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": cat.KodeJenjang,
         "selected": cat.index == 0
       }
-    }, [_vm._v("\n                    " + _vm._s(cat.index) + " " + _vm._s(cat.KodeJenjang) + " " + _vm._s(cat.NamaJenjang) + "\n                ")])
-  }))]), _vm._v(" "), _c('div', {
+    }, [_vm._v("\n                            " + _vm._s(cat.NamaJenjang) + "\n                        ")])
+  })), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.errors.has('jenjang')),
+      expression: "errors.has('jenjang')"
+    }],
+    staticClass: "help-block"
+  }, [_vm._v("jenjang diperlukan")])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     attrs: {
@@ -118468,6 +118410,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "dataForm.jenjang2 "
     }],
     staticClass: "form-control",
+    attrs: {
+      "name": "jenjang2"
+    },
     on: {
       "change": function($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function(o) {
@@ -118486,7 +118431,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": cat.KodeJenjang,
         "selected": cat.KodeJenjang == _vm.dataForm.jenjang2
       }
-    }, [_vm._v("\n                    " + _vm._s(cat.NamaJenjang) + "\n                ")])
+    }, [_vm._v("\n                            " + _vm._s(cat.NamaJenjang) + "\n                        ")])
   }))]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
@@ -118515,47 +118460,39 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.dataForm.kurikulum = $event.target.value
       }
     }
-  })])])])]), _vm._v(" "), _c('modal', {
-    staticClass: "modal-danger",
+  })])])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer",
     attrs: {
-      "title": "Modal title",
-      "effect": "fade/zoom"
+      "slot": "modal-footer"
+    },
+    slot: "modal-footer"
+  }, [_c('button', {
+    staticClass: "btn btn-default",
+    attrs: {
+      "type": "button"
     },
     on: {
-      "ok": function($event) {
-        _vm.deleteSmartexercise(_vm.dataForm.idse)
+      "click": function($event) {
+        _vm.primaryModal = false
       }
-    },
-    model: {
-      value: (_vm.deleteModal),
-      callback: function($$v) {
-        _vm.deleteModal = $$v
-      },
-      expression: "deleteModal"
     }
-  }, [_c('div', {
-    staticClass: "modal-header",
+  }, [_vm._v("Tutup")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-primary",
     attrs: {
-      "slot": "modal-header"
+      "type": "submit"
     },
-    slot: "modal-header"
-  }, [_c('h4', {
-    staticClass: "modal-title"
-  }, [_vm._v("Delete Data")])]), _vm._v(" "), _c('div', {
-    staticClass: "card-block"
-  }, [_c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    attrs: {
-      "for": "company"
+    on: {
+      "click": function($event) {
+        _vm.vaidateForm(_vm.dataForm.idse)
+      }
     }
-  }, [_vm._v("Apakah kamu yakin? ")])])])])], 1)
+  }, [_vm._v("Simpan")])])])], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "card-header"
   }, [_c('i', {
     staticClass: "fa fa-align-justify"
-  }), _vm._v(" Smart Exercise Table\n      ")])
+  }), _vm._v(" Smart Exercise Table\n            ")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("No")]), _vm._v(" "), _c('th', [_vm._v("Nama")]), _vm._v(" "), _c('th', [_vm._v("Keterangan")]), _vm._v(" "), _c('th', [_vm._v("Jenjang 1")]), _vm._v(" "), _c('th', [_vm._v("Jenjang 2")]), _vm._v(" "), _c('th', [_vm._v("Kurikulum")]), _vm._v(" "), _c('th', [_vm._v("Action")])])])
 }]}
@@ -118935,7 +118872,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "card-header"
   }, [_c('i', {
     staticClass: "fa fa-align-justify"
-  }), _vm._v(" Tips N Trik Table\n      ")])
+  }), _vm._v(" Tips N Trik Table\n            ")])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("No")]), _vm._v(" "), _c('th', [_vm._v("File")]), _vm._v(" "), _c('th', [_vm._v("Keterangan")]), _vm._v(" "), _c('th', [_vm._v("Action")])])])
 }]}
@@ -121869,6 +121806,138 @@ module.exports = function() {
 __webpack_require__(238);
 module.exports = __webpack_require__(239);
 
+
+/***/ }),
+/* 557 */,
+/* 558 */,
+/* 559 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        pagination: {
+            type: Object,
+            required: true
+        },
+        fetchFunc: {
+            type: Function,
+            required: true
+        }
+    },
+    methods: {
+        callFetch: function callFetch(page) {
+            this.fetchFunc(page);
+        }
+    }
+});
+
+/***/ }),
+/* 560 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(559),
+  /* template */
+  __webpack_require__(561),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "D:\\workpalce\\ELPrimagama\\resources\\assets\\js\\components\\Pagination.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Pagination.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-464b7c78", Component.options)
+  } else {
+    hotAPI.reload("data-v-464b7c78", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 561 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('nav', [_c('ul', {
+    staticClass: "pagination"
+  }, [(_vm.pagination.current_page > 1) ? _c('li', {
+    staticClass: "page-item"
+  }, [_c('a', {
+    staticClass: "page-link",
+    attrs: {
+      "href": "javascript:;"
+    },
+    on: {
+      "click": function($event) {
+        _vm.callFetch(_vm.pagination.current_page - 1)
+      }
+    }
+  }, [_vm._v("Prev")])]) : _vm._e(), _vm._v(" "), _vm._l((_vm.pagination.last_page), function(page, index) {
+    return _c('li', {
+      key: index,
+      class: [page == _vm.pagination.current_page ? 'active' : '']
+    }, [_c('a', {
+      attrs: {
+        "href": "javascript:;"
+      },
+      on: {
+        "click": function($event) {
+          _vm.callFetch(page)
+        }
+      }
+    }, [_vm._v(_vm._s(page))])])
+  }), _vm._v(" "), (_vm.pagination.current_page < _vm.pagination.last_page) ? _c('li', {
+    staticClass: "page-item"
+  }, [_c('a', {
+    staticClass: "page-link",
+    attrs: {
+      "href": "javascript:;"
+    },
+    on: {
+      "click": function($event) {
+        _vm.callFetch(_vm.pagination.current_page + 1)
+      }
+    }
+  }, [_vm._v("Next")])]) : _vm._e()], 2)])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-464b7c78", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

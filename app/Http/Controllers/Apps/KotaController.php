@@ -27,8 +27,13 @@ class KotaController extends Controller
     public function index()
     {
         $propinsi  = $this->request->input('propinsi');
-        return Kota::where("Propinsi", "LIKE","$propinsi")
-                    ->orderBy('RecID')->get();
+        if ($propinsi) {
+            return Kota::where("Propinsi", "LIKE","$propinsi")
+            ->orderBy('RecID')->get();
+        } else {
+            return Kota::orderBy('RecID')->get();
+        }
+        
     }
 
 }

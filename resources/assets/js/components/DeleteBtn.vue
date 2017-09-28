@@ -3,7 +3,7 @@
         <button @click="deleteModal = true" class="btn btn-danger btn-xs">
             <i class="fa fa-trash"></i>
         </button>
-        <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="okFunc(dataForm.RecID)" effect="fade/zoom">
+        <modal title="Modal title" class="modal-danger" v-model="deleteModal" effect="fade/zoom">
             <div slot="modal-header" class="modal-header">
                 <h4 class="modal-title">Delete Data</h4>
             </div>
@@ -15,7 +15,7 @@
             </div>
             <div slot="modal-footer" class="modal-footer">
                 <button type="button" class="btn btn-default" @click="deleteModal = false">Tidak</button>
-                <button type="submit" class="btn btn-primary" @click="deleteModal = false">Ya</button>
+                <button type="submit" class="btn btn-primary" @click="callFunc">Ya</button>
             </div>
         </modal>
     </div>
@@ -33,7 +33,12 @@ export default {
             deleteModal: false,
         }
     },
-    props: ['id'],
+    props: {
+        okFunc: {
+            type: Function,
+            required: true
+        },
+    },
     components: {
         modal,
     },
@@ -43,15 +48,9 @@ export default {
         }
     },
     methods: {
-        showDialog() {
-            this.show = true;
-        },
-        okFunc(e) {
-            let files = e.target.files || e.dataTransfer.files;
-            if (!files.length)
-                return;
-            this.createImage(files[0]);
-            this.$emit('fileChange', files[0])
+        callFunc() {
+            this.deleteModal = false;
+            this.okFunc();
         },
     }
 }

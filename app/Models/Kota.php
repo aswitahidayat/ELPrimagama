@@ -11,7 +11,7 @@ class Kota extends Model
      *
      * @var string
      */
-     protected $table = 'kotakab';
+     protected $table = 'dbo.kotakab';
 
     /**
      * The connection name for the model.

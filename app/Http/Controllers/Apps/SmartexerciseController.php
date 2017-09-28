@@ -73,7 +73,7 @@ class SmartexerciseController extends Controller
         return Smartexercise::create([ 
             'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan,
-            'jenjang1' => $request->jenjang1,
+            'jenjang' => $request->jenjang,
             'jenjang2' => $request->jenjang2,
             'kurikulum' => $request->kurikulum
         ]);
@@ -120,7 +120,7 @@ class SmartexerciseController extends Controller
             ->update([ 
                 'nmfile' => $request->nmfile,
                 'keterangan' => $request->keterangan,
-                'jenjang1' => $request->jenjang1,
+                'jenjang' => $request->jenjang,
                 'jenjang2' => $request->jenjang2,
                 'kurikulum' => $request->kurikulum
             ]);

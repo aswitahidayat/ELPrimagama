@@ -11,7 +11,7 @@ class Propinsi extends Model
      *
      * @var string
      */
-     protected $table = 'propinsi';
+     protected $table = 'dbo.propinsi';
 
     /**
      * The connection name for the model.

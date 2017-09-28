@@ -39,29 +39,13 @@
                                     <button type="button" class="btn btn-primary" @click="popUpEditMititi(task.RecID)">
                                         <i class="fa fa-edit"></i>
                                     </button>
-                                    <button @click="popUpDeleteMititi(task)" class="btn btn-danger btn-xs">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                    <delete-btn> </delete-btn>
+                                    <delete-btn :okFunc="deleteMititi.bind(null, task.RecID)"> </delete-btn>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item" v-if="pagination.current_page > 1">
-                                <a class="page-link" href="javascript:;" @click="fetchMititiList(pagination.current_page - 1)">Prev</a>
-                            </li>
-                            <li v-for="(page, index) in pagination.last_page" :key="index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
-                                <a href="javascript:;" @click="fetchMititiList(page)">{{ page }}</a>
-                            </li>
-                            <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
-                                <a class="page-link" href="javascript:;" @click="fetchMititiList(pagination.current_page + 1)">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
-
+                    <Pagination :pagination="pagination" :fetchFunc="fetchMititiList"> </Pagination>
                 </div>
             </div>
         </div>
@@ -88,20 +72,8 @@
             </div>
 
             <div slot="modal-footer" class="modal-footer">
-                <button type="button" class="btn btn-default" @click="dataForm = {};primaryModal = false">Tutup</button>
+                <button type="button" class="btn btn-default" @click="primaryModal = false">Tutup</button>
                 <button type="submit" class="btn btn-primary" @click="vaidateForm(dataForm.RecID)">Simpan</button>
-            </div>
-        </modal>
-
-        <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteMititi(dataForm.RecID)" effect="fade/zoom">
-            <div slot="modal-header" class="modal-header">
-                <h4 class="modal-title">Delete Data</h4>
-            </div>
-
-            <div class="card-block">
-                <div class="form-group">
-                    <label for="company">Apakah kamu yakin? </label>
-                </div>
             </div>
         </modal>
     </div>
@@ -110,16 +82,17 @@
 
 <script>
 import modal from 'vue-strap/src/Modal'
+import toastr from 'toastr'
 import DeleteBtn from '../../../components/DeleteBtn'
-import { input as bsInput, formValidator } from 'vue-strap'
+import Pagination from '../../../components/Pagination'
 
 export default {
-    name: 'modals',
+    name: 'TipsNTrik',
     components: {
         modal,
-        formValidator,
-        bsInput,
+        toastr,
         DeleteBtn,
+        Pagination,
     },
     data() {
         return {
@@ -147,6 +120,15 @@ export default {
         this.fetchMititiList();
     },
 
+    watch: {
+        primaryModal: function (val) {
+            if (!val){
+                this.dataForm={};
+            }
+            this.errors.clear();
+        }
+    },
+
     methods: {
         fetchMititiList(page) {
             axios.get('api/mititi?page=' + page + '&keyword=' + this.keyword)
@@ -170,8 +152,9 @@ export default {
             this.$validator.validateAll().then((result) => {
                 if (result) {
                     this.editMititi(id);
+                } else {
+                    toastr.error('Ada Field Yang Belum Diisi!');
                 }
-                alert('Correct them errors!');
             });
         },
 
@@ -182,7 +165,8 @@ export default {
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
-                        this.fetchMititiList()
+                        this.fetchMititiList();
+                        toastr.success('Data Berhasil Di Ubah');
                     })
                     .catch((err) => console.error(err));
             } else {
@@ -190,7 +174,8 @@ export default {
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
-                        this.fetchMititiList()
+                        this.fetchMititiList();
+                        toastr.success('Data Berhasil Di Simpan');
                     })
                     .catch((err) => {
                         console.log("err");
@@ -198,17 +183,13 @@ export default {
             }
         },
 
-        popUpDeleteMititi(task) {
-            this.dataForm = task;
-            this.deleteModal = true;
-        },
-
         deleteMititi(id) {
             axios.delete('api/mititi/' + id)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;
-                    this.fetchMititiList()
+                    this.fetchMititiList();
+                    toastr.success('Data Berhasil Di Delete');
                 })
                 .catch((err) => console.error(err));
         },
