@@ -17,11 +17,18 @@ require('./bootstrap');
 // Vue.component('example', require('./components/Example.vue'));
 
 import Vue from 'vue';
+import VeeValidate from 'vee-validate';
+import toastr from 'toastr'
 import App from './App.vue';
 import router from './router';
-import VeeValidate from 'vee-validate';
+import LoadingBar from './components/LoadingBar';
+import Pagination from './components/Pagination'
+
 
 Vue.component('App', require('./App.vue'));
+Vue.component('toastr', require('toastr'));
+Vue.component('LoadingBar', require('./components/LoadingBar'));
+Vue.component('Pagination', require('./components/Pagination'));
 
 Vue.use(VeeValidate);
 

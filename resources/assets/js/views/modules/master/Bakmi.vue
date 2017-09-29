@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Tips N Trik Table
+                    <i class="fa fa-align-justify"></i> Pembahasan Materi Table
                 </div>
                 <div class="card-block">
                     <div class="row">
@@ -13,7 +13,7 @@
                         </div>
                         <div class="col-sm-9">
                             <div class="input-group">
-                                <input type="text" id="username2" name="username2" v-model="keyword" placeholder="Cari" class="form-control">
+                                <input type="text" v-model="keyword" placeholder="Cari" class="form-control">
                                 <button @click="fetchBakmiList()" class="input-group-addon">
                                     <i class="fa fa-search"></i>
                                 </button>
@@ -39,27 +39,12 @@
                                     <button type="button" class="btn btn-primary" @click="popUpEditBakmi(task.RecID)">
                                         <i class="fa fa-edit"></i>
                                     </button>
-                                    <button @click="popUpDeleteBakmi(task)" class="btn btn-danger btn-xs">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    <delete-btn :okFunc="deleteBakmi.bind(null, task.RecID)"> </delete-btn>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item" v-if="pagination.current_page > 1">
-                                <a class="page-link" href="javascript:;" @click="fetchBakmiList(pagination.current_page - 1)">Prev</a>
-                            </li>
-                            <li v-for="(page, index) in pagination.last_page" :key="index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
-                                <a href="javascript:;" @click="fetchBakmiList(page)">{{ page }}</a>
-                            </li>
-                            <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
-                                <a class="page-link" href="javascript:;" @click="fetchBakmiList(pagination.current_page + 1)">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <Pagination :pagination="pagination" :fetchFunc="fetchBakmiList"> </Pagination>
 
                 </div>
             </div>
@@ -73,51 +58,47 @@
 
             <div class="card-block">
                 <div class="form-group">
-                    <label for="company">File</label>
-                    <input type="text" class="form-control" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+                    <label>File</label>
+                    <input name="file" type="text" class="form-control" v-model="dataForm.nmfile" v-validate="'required'"
+                        value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+                    <span v-show="errors.has('file')" class="help-block">file diperlukan</span>
                 </div>
 
                 <div class="form-group">
-                    <label for="company">Keterangan</label>
-                    <input type="text" class="form-control" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                    <label>Keterangan</label>
+                    <input name="keterangan" type="text" class="form-control" v-model="dataForm.keterangan" v-validate="'required'"
+                        value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                    <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
                 </div>
 
             </div>
 
             <div slot="modal-footer" class="modal-footer">
                 <button type="button" class="btn btn-default" @click="dataForm = {};primaryModal = false">Tutup</button>
-                <button type="submit" class="btn btn-primary" @click="editBakmi(dataForm.RecID)">Simpan</button>
+                <button type="submit" class="btn btn-primary" @click="vaidateForm(dataForm.RecID)">Simpan</button>
             </div>
         </modal>
+        <loading-bar :show="!ready"> </loading-bar>
 
-        <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteBakmi(dataForm.RecID)" effect="fade/zoom">
-            <div slot="modal-header" class="modal-header">
-                <h4 class="modal-title">Delete Data</h4>
-            </div>
-
-            <div class="card-block">
-                <div class="form-group">
-                    <label for="company">Apakah kamu yakin? </label>
-                </div>
-            </div>
-        </modal>
     </div>
     <!--/.row-->
 </template>
 
 <script>
 import modal from 'vue-strap/src/Modal'
-import { input as bsInput, formValidator } from 'vue-strap'
+import toastr from 'toastr'
+import DeleteBtn from '../../../components/DeleteBtn'
 
 export default {
-    name: 'modals',
+    name: 'Bakmi',
     components: {
         modal,
-        formValidator,
-        bsInput,
+        toastr,
+        DeleteBtn,
     },
     data() {
         return {
+            ready: true,
             keyword: '',
             primaryModal: false,
             deleteModal: false,
@@ -152,39 +133,47 @@ export default {
 
     methods: {
         fetchBakmiList(page) {
+            this.ready = false;
             axios.get('api/bakmi?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
-                })
-                .catch((err) => console.error(err));
-        },
-
-        createBakmi() {
-            axios.post('api/bakmi', this.dataForm)
-                .then((res) => {
-                    this.dataForm = {};
-                    this.fetchBakmiList();
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         popUpEditBakmi(id) {
+            this.ready = false;
             axios.get('api/bakmi/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
+        vaidateForm(id) {
+            this.$validator.validateAll().then((result) => {
+                if (result) {
+                    this.editBakmi(id);
+                } else {
+                    toastr.error('Ada Field Yang Belum Diisi!');
+                }
+            });
+        },
+
         editBakmi(id) {
+            this.ready = false;
             if (id && id !== "") {
                 axios.put('api/bakmi/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
-                        this.fetchBakmiList()
+                        this.fetchBakmiList();
+                        toastr.success('Data Berhasil Di Ubah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             } else {
@@ -192,23 +181,23 @@ export default {
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
-                        this.fetchBakmiList()
+                        this.fetchBakmiList();
+                        toastr.success('Data Berhasil Di Tambah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             }
         },
 
-        popUpDeleteBakmi(task) {
-            this.dataForm = task;
-            this.deleteModal = true;
-        },
-
         deleteBakmi(id) {
+            this.ready = false;
             axios.delete('api/bakmi/' + id)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;
-                    this.fetchBakmiList()
+                    this.fetchBakmiList();
+                    toastr.success('Data Berhasil Di Delete');
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },

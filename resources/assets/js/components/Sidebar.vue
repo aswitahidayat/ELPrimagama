@@ -57,6 +57,9 @@
             <li class="nav-item">
               <router-link :to="'/master/sekolah'" class="nav-link" exact><i class="icon-puzzle"></i> Asal Sekolah</router-link>
             </li>
+            <li class="nav-item">
+              <router-link :to="'/master/banner'" class="nav-link" exact><i class="icon-puzzle"></i> Banner</router-link>
+            </li>
           </ul>
         </router-link>
 

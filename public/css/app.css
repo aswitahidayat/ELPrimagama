@@ -13117,7 +13117,6 @@ app-root {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
-  overflow-x: hidden;
 }
 
 .app-body .main {
@@ -16761,4 +16760,8 @@ button.toast-close-button {
   #toast-container > div.rtl {
     padding: 15px 50px 15px 15px;
   }
+}
+
+.action-td {
+  min-width: 130px;
 }

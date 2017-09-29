@@ -13,11 +13,11 @@ class PikseController extends Controller
      * Constructor
      *
      */
-     protected $request;
-     
-     public function __construct(Request $request) {
-         $this->request = $request;
-     }
+    protected $request;
+    
+    public function __construct(Request $request) {
+        $this->request = $request;
+    }
 
     /**
      * Display a listing of the resource.
@@ -73,7 +73,7 @@ class PikseController extends Controller
         return Pikse::create([ 
             'nmfile' => $request->nmfile,
             'keterangan' => $request->keterangan,
-            'jenjang1' => $request->jenjang1,
+            'jenjang' => $request->jenjang,
             'jenjang2' => $request->jenjang2,
             'kurikulum' => $request->kurikulum
         ]);
@@ -120,7 +120,7 @@ class PikseController extends Controller
             ->update([ 
                 'nmfile' => $request->nmfile,
                 'keterangan' => $request->keterangan,
-                'jenjang1' => $request->jenjang1,
+                'jenjang' => $request->jenjang,
                 'jenjang2' => $request->jenjang2,
                 'kurikulum' => $request->kurikulum
             ]);

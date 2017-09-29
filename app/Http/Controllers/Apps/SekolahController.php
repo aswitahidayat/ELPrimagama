@@ -64,12 +64,15 @@ class SekolahController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'asal_sekolah' => 'required|max:500'
+            'asal_sekolah' => 'required|max:500',
+            'propinsi' => 'required|max:10',
+            'kota' => 'required|max:10',
         ]);
 
         return Sekolah::create([ 
             'asal_sekolah' => $request->asal_sekolah,
-            'keterangan' => $request->keterangan
+            'propinsi' => $request->propinsi,
+            'kota' => $request->kota,
         ]);
     }
 
@@ -106,12 +109,16 @@ class SekolahController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'asal_sekolah' => 'required|max:500'
+            'asal_sekolah' => 'required|max:500',
+            'propinsi' => 'required|max:10',
+            'kota' => 'required|max:10',
         ]);
 
         return Sekolah::where('RecID', $id)
         ->update([
             'asal_sekolah' => $request->asal_sekolah,
+            'propinsi' => $request->propinsi,
+            'kota' => $request->kota,
         ]);
     }
 

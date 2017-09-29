@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Smart Ebook Table
+                    <i class="fa fa-align-justify"></i> Asal Sekolah Table
                 </div>
                 <div class="card-block">
                     <div class="row">
@@ -41,27 +41,12 @@
                                     <button type="button" class="btn btn-primary" @click="popUpEditSekolah(task.RecID)">
                                         <i class="fa fa-edit"></i>
                                     </button>
-                                    <button @click="popUpDeleteSekolah(task)" class="btn btn-danger btn-xs">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    <delete-btn :okFunc="deleteSekolah.bind(null, task.RecID)"> </delete-btn>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item" v-if="pagination.current_page > 1">
-                                <a class="page-link" href="javascript:;" @click="fetchSekolahList(pagination.current_page - 1)">Prev</a>
-                            </li>
-                            <li v-for="(page, index) in pagination.last_page" :key="page.index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
-                                <a href="javascript:;" @click="fetchSekolahList(page)" v-if="index < pagination.current_page + 5 && index > pagination.current_page - 5">{{ page }}</a>
-                            </li>
-                            <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
-                                <a class="page-link" href="javascript:;" @click="fetchSekolahList(pagination.current_page + 1)">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <Pagination :pagination="pagination" :fetchFunc="fetchSekolahList"> </Pagination>
 
                 </div>
             </div>
@@ -77,25 +62,29 @@
                 <form>
                     <div class="form-group has-error">
                         <label for="company">Asal Sekolah</label>
-                        <input type="text" id="firstname" name="firstname" class="form-control" v-model="dataForm.asal_sekolah" value="{ dataForm.asal_sekolah }" placeholder="Asal Sekolah" required>
+                        <input name="asal sekolah" type="text" class="form-control" v-validate="'required'" 
+                            v-model="dataForm.asal_sekolah" value="{ dataForm.asal_sekolah }" placeholder="Asal Sekolah">
+                        <span v-show="errors.has('asal sekolah')" class="help-block">asal sekolah diperlukan</span>
                     </div>
 
                     <div class="form-group">
                         <label for="company">Propinsi</label>
-                        <select class="form-control" v-model="dataForm.propinsi" v-on:change="getKota()">
-                            <option v-for="cat in this.listPropinsi" :key="cat.RecID" :value="cat.RecID" :selected="cat.index == dataForm.propinsi">
+                        <select name="propinsi" class="form-control" v-model="dataForm.propinsi" v-on:change="getKota()" v-validate.initial="'required'">
+                            <option v-for="cat in this.listPropinsi" :key="cat.RecID" :value="cat.RecID" :selected="cat.RecID == dataForm.propinsi">
                                 {{ cat.NamaPropinsi }}
                             </option>
                         </select>
+                        <span v-show="errors.has('propinsi')" class="help-block">propinsi diperlukan</span>
                     </div>
 
                     <div class="form-group">
                         <label for="company">Kota</label>
-                        <select class="form-control" v-model="dataForm.kota" :disabled="!dataForm.propinsi">
-                            <option v-for="cat in this.listKota" :key="cat.RecID" :value="cat.RecID" :selected="cat.KodeJenjang == dataForm.kota">
+                        <select name="kota" class="form-control" v-model="dataForm.kota" :disabled="!dataForm.propinsi" v-validate.initial="'required'">
+                            <option v-for="cat in this.listKota" :key="cat.RecID" :value="cat.RecID" :selected="cat.RecID == dataForm.kota">
                                 {{ cat.NamaKotaKab }}
                             </option>
                         </select>
+                        <span v-show="errors.has('kota')" class="help-block">kota diperlukan</span>
                     </div>
                 </form>
 
@@ -103,39 +92,30 @@
             
             <div slot="modal-footer" class="modal-footer">
                 <button type="button" class="btn btn-default" @click="primaryModal = false">Tutup</button>
-                <button type="submit" class="btn btn-primary" @click="editSekolah(dataForm.RecID)" >Simpan</button>
-            </div>
-
-        </modal>
-
-        <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteSekolah(dataForm.RecID)" effect="fade/zoom">
-            <div slot="modal-header" class="modal-header">
-                <h4 class="modal-title">Delete Data</h4>
-            </div>
-            <div class="card-block">
-                <div class="form-group">
-                    <label for="company">Apakah kamu yakin? </label>
-                </div>
+                <button type="submit" class="btn btn-primary" @click="vaidateForm(dataForm.RecID)" >Simpan</button>
             </div>
         </modal>
+        <loading-bar :show="!ready"> </loading-bar>
+
     </div>
     <!--/.row-->
 </template>
 
 <script>
 import modal from 'vue-strap/src/Modal'
-import { input as bsInput, formValidator } from 'vue-strap'
+import toastr from 'toastr'
+import DeleteBtn from '../../../components/DeleteBtn'
 
 export default {
     name: 'modals',
     components: {
         modal,
-        formValidator,
-        bsInput,
+        toastr,
+        DeleteBtn,
     },
     data() {
         return {
-            valid: false,
+            ready: true,
             keyword: '',
             primaryModal: false,
             deleteModal: false,
@@ -166,50 +146,56 @@ export default {
 
     watch: {
         primaryModal: function (val) {
-            if (!val)
+            if (!val){
                 this.dataForm={};
+            }
+            this.errors.clear();
         }
     },
+    
     methods: {
         fetchSekolahList(page) {
+            this.ready = false;
             axios.get('api/sekolah?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
-                })
-                .catch((err) => console.error(err));
-        },
-
-        createSekolah() {
-            axios.post('api/sekolah', this.dataForm)
-                .then((res) => {
-                    this.dataForm = {};
-                    this.fetchSekolahList();
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         popUpEditSekolah(id) {
+            this.ready = false;
             axios.get('api/sekolah/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
-        popUpDeleteSekolah(task) {
-            this.dataForm = task;
-            this.deleteModal = true;
+        vaidateForm(id) {
+            this.$validator.validateAll().then((result) => {
+                if (result) {
+                    this.editSekolah(id);
+                } else {
+                    toastr.error('Ada Field Yang Belum Diisi!');
+                }
+            });
         },
 
         editSekolah(id) {
+            this.ready = false;
             if (id && id !== "") {
                 axios.put('api/sekolah/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
-                        this.fetchSekolahList()
+                        this.fetchSekolahList();
+                        toastr.success('Data Berhasil Di Ubah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             } else {
@@ -217,34 +203,43 @@ export default {
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
-                        this.fetchSekolahList()
+                        this.fetchSekolahList();
+                        toastr.success('Data Berhasil Di Tambah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             }
         },
 
         deleteSekolah(id) {
+            this.ready = false;
             axios.delete('api/sekolah/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.dataForm = {};
-                    this.fetchSekolahList()
+                    this.fetchSekolahList();
+                    toastr.success('Data Berhasil Di Hapus');
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         getPropinsi() {
+            this.ready = false;
             axios.get('api/propinsi/')
                 .then((res) => {
                     this.listPropinsi = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         getKota() {
+            this.ready = false;
             axios.get('api/kota?propinsi=' + this.dataForm.propinsi)
                 .then((res) => {
                     this.listKota = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },

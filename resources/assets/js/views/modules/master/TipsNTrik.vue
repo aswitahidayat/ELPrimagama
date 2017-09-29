@@ -44,8 +44,8 @@
                             </tr>
                         </tbody>
                     </table>
-
                     <Pagination :pagination="pagination" :fetchFunc="fetchMititiList"> </Pagination>
+                    
                 </div>
             </div>
         </div>
@@ -58,13 +58,13 @@
 
             <div class="card-block">
                 <div class="form-group">
-                    <label for="company">File</label>
+                    <label>File</label>
                     <input name="nama" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
                     <span v-show="errors.has('nama')" class="help-block">nama diperlukan</span>
                 </div>
 
                 <div class="form-group">
-                    <label for="company">Keterangan</label>
+                    <label>Keterangan</label>
                     <input name="keterangan" type="text" class="form-control" v-validate="'required'" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
                     <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
                 </div>
@@ -76,6 +76,8 @@
                 <button type="submit" class="btn btn-primary" @click="vaidateForm(dataForm.RecID)">Simpan</button>
             </div>
         </modal>
+
+        <loading-bar :show="!ready"> </loading-bar>
     </div>
     <!--/.row-->
 </template>
@@ -84,7 +86,6 @@
 import modal from 'vue-strap/src/Modal'
 import toastr from 'toastr'
 import DeleteBtn from '../../../components/DeleteBtn'
-import Pagination from '../../../components/Pagination'
 
 export default {
     name: 'TipsNTrik',
@@ -92,11 +93,10 @@ export default {
         modal,
         toastr,
         DeleteBtn,
-        Pagination,
     },
     data() {
         return {
-            valid: false,
+            ready: true,
             keyword: '',
             primaryModal: false,
             deleteModal: false,
@@ -131,19 +131,23 @@ export default {
 
     methods: {
         fetchMititiList(page) {
+            this.ready = false;
             axios.get('api/mititi?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         popUpEditMititi(id) {
+            this.ready = false;
             axios.get('api/mititi/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
@@ -159,7 +163,7 @@ export default {
         },
 
         editMititi(id) {
-
+            this.ready = false;
             if (id && id !== "") {
                 axios.put('api/mititi/' + id, this.dataForm)
                     .then((res) => {
@@ -167,15 +171,18 @@ export default {
                         this.dataForm = {};
                         this.fetchMititiList();
                         toastr.success('Data Berhasil Di Ubah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             } else {
+                this.ready = false;
                 axios.post('api/mititi', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
                         this.fetchMititiList();
                         toastr.success('Data Berhasil Di Simpan');
+                        this.ready = true;
                     })
                     .catch((err) => {
                         console.log("err");
@@ -184,12 +191,14 @@ export default {
         },
 
         deleteMititi(id) {
+            this.ready = false;
             axios.delete('api/mititi/' + id)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;
                     this.fetchMititiList();
                     toastr.success('Data Berhasil Di Delete');
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },

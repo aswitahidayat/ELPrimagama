@@ -51,7 +51,7 @@
                         </tbody>
                     </table>
                     
-                    <Pagination :pagination="pagination" :fetchFunc="fetchMititiList"> </Pagination>
+                    <Pagination :pagination="pagination" :fetchFunc="fetchSmartexerciseList"> </Pagination>
                 </div>
             </div>
         </div>
@@ -109,6 +109,8 @@
             </div>
 
         </modal>
+        <loading-bar :show="!ready"> </loading-bar>
+        
     </div>
     <!--/.row-->
 </template>
@@ -117,7 +119,6 @@
 import modal from 'vue-strap/src/Modal'
 import toastr from 'toastr'
 import DeleteBtn from '../../../components/DeleteBtn'
-import Pagination from '../../../components/Pagination'
 
 export default {
     name: 'Smartexercise',
@@ -125,11 +126,10 @@ export default {
         modal,
         toastr,
         DeleteBtn,
-        Pagination,
     },
     data() {
         return {
-            valid: false,
+            ready: true,
             keyword: '',
             primaryModal: false,
             deleteModal: false,
@@ -168,19 +168,23 @@ export default {
 
     methods: {
         fetchSmartexerciseList(page) {
+            this.ready = false;
             axios.get('api/smartexercise?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         popUpEditSmartexercise(id) {
+            this.ready = false;
             axios.get('api/smartexercise/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
@@ -196,6 +200,7 @@ export default {
         },
 
         editSmartexercise(id) {
+            this.ready = false;
             if (id && id !== "") {
                 axios.put('api/smartexercise/' + id, this.dataForm)
                     .then((res) => {
@@ -203,6 +208,7 @@ export default {
                         this.dataForm = {};
                         this.fetchSmartexerciseList();
                         toastr.success('Data Berhasil Di Ubah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             } else {
@@ -212,34 +218,41 @@ export default {
                         this.dataForm = {};
                         this.fetchSmartexerciseList()
                         toastr.success('Data Berhasil Di Simpan');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             }
         },
 
         deleteSmartexercise(id) {
+            this.ready = false;
             axios.delete('api/smartexercise/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.dataForm = {};
                     this.fetchSmartexerciseList();
                     toastr.success('Data Berhasil Di Delete');
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         getJenjang() {
+            this.ready = false;
             axios.get('api/jenjang/')
                 .then((res) => {
                     this.listJenjang = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         getKurikulum() {
+            this.ready = false;
             axios.get('api/kurikulum/')
                 .then((res) => {
                     this.listKurikulum = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },

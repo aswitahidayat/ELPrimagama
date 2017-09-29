@@ -29,7 +29,8 @@ class SmartebookController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Smartebook::where("nmfile", "LIKE","%$keyword%")
+        $results = Smartebook::select('idsb','nmfile', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum')
+                                ->where("nmfile", "LIKE","%$keyword%")
                                 ->orWhere("keterangan", "LIKE","%$keyword%")
                                 ->orderBy('idsb', 'asc')
                                 ->paginate(10);

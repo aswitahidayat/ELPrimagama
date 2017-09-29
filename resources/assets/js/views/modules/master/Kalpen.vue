@@ -41,27 +41,12 @@
                                     <button type="button" class="btn btn-primary" @click="popUpEditKalpen(task.RecID)">
                                         <i class="fa fa-edit"></i>
                                     </button>
-                                    <button @click="popUpDeleteKalpen(task)" class="btn btn-danger btn-xs">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    <delete-btn :okFunc="deleteKalpen.bind(null, task.RecID)"> </delete-btn>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item" v-if="pagination.current_page > 1">
-                                <a class="page-link" href="javascript:;" @click="fetchKalpenList(pagination.current_page - 1)">Prev</a>
-                            </li>
-                            <li v-for="(page, index) in pagination.last_page" :key="index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
-                                <a href="javascript:;" @click="fetchKalpenList(page)">{{ page }}</a>
-                            </li>
-                            <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
-                                <a class="page-link" href="javascript:;" @click="fetchKalpenList(pagination.current_page + 1)">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <Pagination :pagination="pagination" :fetchFunc="fetchKalpenList"> </Pagination>
 
                 </div>
             </div>
@@ -75,56 +60,53 @@
             <div class="card-block">
                 <div class="form-group">
                     <label for="company">File</label>
-                    <input type="text" class="form-control" v-model="dataForm.judul" value="{ dataForm.judul }" placeholder="Masukan Nama File">
+                    <input name="file" type="text" class="form-control" v-model="dataForm.judul" v-validate="'required'"
+                        value="{ dataForm.judul }" placeholder="Masukan Nama File">
+                    <span v-show="errors.has('file')" class="help-block">file diperlukan</span>
                 </div>
 
                 <div class="form-group">
                     <label for="company">Keterangan</label>
-                    <input type="text" class="form-control" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan" required>
+                    <input name="keterangan" type="text" class="form-control" v-model="dataForm.keterangan" v-validate="'required'"
+                        value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                    <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
                 </div>
 
                 <div class="form-group">
                     <label for="company">Tanggal</label>
-                    <datepicker v-model="dataForm.tanggal" value="{ dataForm.tanggal }" :label="'File'" :format="'yyyy-MM-dd'" :placeholder="'Masukan Tanggal'"></datepicker>
+                    <datepicker name="tanggal" v-model="dataForm.tanggal" v-validate="'required'" value="{ dataForm.tanggal }" :label="'File'" :format="'yyyy-MM-dd'" :placeholder="'Masukan Tanggal'"></datepicker>
+                    <span v-show="errors.has('tanggal')" class="help-block">tanggal diperlukan</span>
                 </div>
             </div>
 
             <div slot="modal-footer" class="modal-footer">
                 <button type="button" class="btn btn-default" @click="resetDataFrom();primaryModal = false">Tutup</button>
-                <button type="submit" class="btn btn-primary" @click="editKalpen(dataForm.RecID)">Simpan</button>
+                <button type="submit" class="btn btn-primary" @click="vaidateForm(dataForm.RecID)">Simpan</button>
             </div>
         </modal>
+        <loading-bar :show="!ready"> </loading-bar>
 
-        <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteKalpen(dataForm.RecID)" effect="fade/zoom">
-            <div slot="modal-header" class="modal-header">
-                <h4 class="modal-title">Delete Data</h4>
-            </div>
-
-            <div class="card-block">
-                <div class="form-group">
-                    <label for="company">Apakah kamu yakin? </label>
-                </div>
-            </div>
-        </modal>
     </div>
     <!--/.row-->
 </template>
 
 <script>
 import modal from 'vue-strap/src/Modal'
-import { input as bsInput, formValidator, datepicker } from 'vue-strap'
+import toastr from 'toastr'
+import DeleteBtn from '../../../components/DeleteBtn'
+import {datepicker} from 'vue-strap'
 
 export default {
     name: 'modals',
     components: {
         modal,
-        formValidator,
-        bsInput,
+        toastr,
+        DeleteBtn,
         datepicker,
     },
     data() {
         return {
-            valid: false,
+            ready: true,
             keyword: '',
             primaryModal: false,
             deleteModal: false,
@@ -169,19 +151,12 @@ export default {
         },
 
         fetchKalpenList(page) {
+            this.ready = false;
             axios.get('api/kalpen?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
-                })
-                .catch((err) => console.error(err));
-        },
-
-        createKalpen() {
-            axios.post('api/kalpen', this.dataForm)
-                .then((res) => {
-                    this.dataForm = {};
-                    this.fetchKalpenList();
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
@@ -195,13 +170,26 @@ export default {
                 .catch((err) => console.error(err));
         },
 
+        vaidateForm(id) {
+            this.$validator.validateAll().then((result) => {
+                if (result) {
+                    this.editKalpen(id);
+                } else {
+                    toastr.error('Ada Field Yang Belum Diisi!');
+                }
+            });
+        },
+
         editKalpen(RecID) {
+            this.ready = false;
             if (RecID && RecID !== "") {
                 axios.put('api/kalpen/' + RecID, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
                         this.fetchKalpenList();
+                        toastr.success('Data Berhasil Di Edit');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             } else {
@@ -210,22 +198,22 @@ export default {
                         this.primaryModal = false;
                         this.dataForm = {};
                         this.fetchKalpenList();
+                        toastr.success('Data Berhasil Di Tambah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             }
         },
 
-        popUpDeleteKalpen(task) {
-            this.dataForm = task;
-            this.deleteModal = true;
-        },
-
         deleteKalpen(RecID) {
+            this.ready = false;
             axios.delete('api/kalpen/' + RecID)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;
                     this.fetchKalpenList();
+                    toastr.success('Data Berhasil Di Delete');
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },

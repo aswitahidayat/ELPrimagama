@@ -39,27 +39,12 @@
                                     <button type="button" class="btn btn-primary" @click="popUpEditKetela(task.RecID)">
                                         <i class="fa fa-edit"></i>
                                     </button>
-                                    <button @click="popUpDeleteKetela(task)" class="btn btn-danger btn-xs">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    <delete-btn :okFunc="deleteKetela.bind(null, task.RecID)"> </delete-btn>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item" v-if="pagination.current_page > 1">
-                                <a class="page-link" href="javascript:;" @click="fetchKetelaList(pagination.current_page - 1)">Prev</a>
-                            </li>
-                            <li v-for="(page, index) in pagination.last_page" :key="index" v-bind:class="[ page == pagination.current_page ? 'active' : '']">
-                                <a href="javascript:;" @click="fetchKetelaList(page)">{{ page }}</a>
-                            </li>
-                            <li class="page-item" v-if="pagination.current_page <  pagination.last_page">
-                                <a class="page-link" href="javascript:;" @click="fetchKetelaList(pagination.current_page + 1)">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <Pagination :pagination="pagination" :fetchFunc="fetchKetelaList"> </Pagination>
 
                 </div>
             </div>
@@ -74,51 +59,46 @@
             <div class="card-block">
                 <div class="form-group">
                     <label for="company">File</label>
-                    <input type="text" class="form-control" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+                    <input name="file" type="text" class="form-control" v-model="dataForm.nmfile" v-validate="'required'"
+                        value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+                    <span v-show="errors.has('file')" class="help-block">file diperlukan</span>
                 </div>
 
                 <div class="form-group">
                     <label for="company">Keterangan</label>
-                    <input type="text" class="form-control" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                    <input name="keterangan" type="text" class="form-control" v-model="dataForm.keterangan" v-validate="'required'"
+                        value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                    <span v-show="errors.has('file')" class="help-block">keterangan diperlukan</span>
                 </div>
 
             </div>
 
             <div slot="modal-footer" class="modal-footer">
                 <button type="button" class="btn btn-default" @click="dataForm = {};primaryModal = false">Tutup</button>
-                <button type="submit" class="btn btn-primary" @click="editKetela(dataForm.RecID)">Simpan</button>
+                <button type="submit" class="btn btn-primary" @click="vaidateForm(dataForm.RecID)">Simpan</button>
             </div>
         </modal>
+        <loading-bar :show="!ready"> </loading-bar>
 
-        <modal title="Modal title" class="modal-danger" v-model="deleteModal" @ok="deleteKetela(dataForm.RecID)" effect="fade/zoom">
-            <div slot="modal-header" class="modal-header">
-                <h4 class="modal-title">Delete Data</h4>
-            </div>
-
-            <div class="card-block">
-                <div class="form-group">
-                    <label for="company">Apakah kamu yakin? </label>
-                </div>
-            </div>
-        </modal>
     </div>
     <!--/.row-->
 </template>
 
 <script>
 import modal from 'vue-strap/src/Modal'
-import { input as bsInput, formValidator } from 'vue-strap'
+import toastr from 'toastr'
+import DeleteBtn from '../../../components/DeleteBtn'
 
 export default {
     name: 'modals',
     components: {
         modal,
-        formValidator,
-        bsInput,
+        toastr,
+        DeleteBtn,
     },
     data() {
         return {
-            valid: false,
+            ready: true,
             keyword: '',
             primaryModal: false,
             deleteModal: false,
@@ -153,39 +133,58 @@ export default {
 
     methods: {
         fetchKetelaList(page) {
+            this.ready = false;
             axios.get('api/ketela?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         createKetela() {
+            this.ready = false;
             axios.post('api/ketela', this.dataForm)
                 .then((res) => {
                     this.dataForm = {};
                     this.fetchKetelaList();
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         popUpEditKetela(id) {
+            this.ready = false;
             axios.get('api/ketela/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
+        vaidateForm(id) {
+            this.$validator.validateAll().then((result) => {
+                if (result) {
+                    this.editKetela(id);
+                } else {
+                    toastr.error('Ada Field Yang Belum Diisi!');
+                }
+            });
+        },
+
         editKetela(id) {
+            this.ready = false;
             if (id && id !== "") {
                 axios.put('api/ketela/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
-                        this.fetchKetelaList()
+                        this.fetchKetelaList();
+                        toastr.success('Data Berhasil Di Ubah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             } else {
@@ -193,7 +192,9 @@ export default {
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
-                        this.fetchKetelaList()
+                        this.fetchKetelaList();
+                        toastr.success('Data Berhasil Di Tambah');
+                        this.ready = true;
                     })
                     .catch((err) => console.error(err));
             }
@@ -205,11 +206,14 @@ export default {
         },
 
         deleteKetela(id) {
+            this.ready = false;
             axios.delete('api/ketela/' + id)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;
-                    this.fetchKetelaList()
+                    this.fetchKetelaList();
+                    toastr.success('Data Berhasil Di Delete');
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },

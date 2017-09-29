@@ -37,7 +37,7 @@ class Sekolah extends Model
 
      public function getKotaDataAttribute()
      {
-         $id = substr($this->kota, 0, 2);
+         $id = substr($this->kota, 0, 4);
          try { 
              $kotas = Kota::where('RecID', $id)->firstOrFail();
          } catch(ModelNotFoundException $e) {

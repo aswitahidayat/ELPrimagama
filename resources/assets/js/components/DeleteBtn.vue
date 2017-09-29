@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <span>
         <button @click="deleteModal = true" class="btn btn-danger btn-xs">
             <i class="fa fa-trash"></i>
         </button>
@@ -18,7 +18,7 @@
                 <button type="submit" class="btn btn-primary" @click="callFunc">Ya</button>
             </div>
         </modal>
-    </div>
+    </span>
 </template>
 
 <script>

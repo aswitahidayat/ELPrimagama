@@ -30,7 +30,7 @@
                                 <th>Jenjang 1</th>
                                 <th>Jenjang 2</th>
                                 <th>Kurikulum</th>
-                                <th>Action</th>
+                                <th class="action-td">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,23 +66,20 @@
                 <form>
                     <div class="form-group has-error">
                         <label for="company">File</label>
-                        <input name="file" type="text" class="form-control" v-validate="'required'" 
-                                v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan File">
+                        <input name="file" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan File">
                         <span v-show="errors.has('file')" class="help-block">file diperlukan</span>
                     </div>
 
                     <div class="form-group">
                         <label for="company">Keterangan</label>
-                        <input name="keterangan" type="text" class="form-control" v-validate="'required'" 
-                                v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                        <input name="keterangan" type="text" class="form-control" v-validate="'required'" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
                         <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
                     </div>
 
                     <div class="form-group">
                         <label for="company">Jenjang</label>
                         <select name="jenjang" class="form-control" v-model="dataForm.jenjang" v-validate.initial="'required'">
-                            <option v-for="cat in this.listJenjang" :key="cat.KodeJenjang" :value="cat.KodeJenjang" 
-                                     :selected="cat.index == dataForm.jenjang">
+                            <option v-for="cat in this.listJenjang" :key="cat.KodeJenjang" :value="cat.KodeJenjang" :selected="cat.index == dataForm.jenjang">
                                 {{ cat.NamaJenjang }}
                             </option>
                         </select>
@@ -92,8 +89,7 @@
                     <div class="form-group">
                         <label for="company">Jenjang 2</label>
                         <select class="form-control" v-model="dataForm.jenjang2 ">
-                            <option v-for="cat in this.listJenjang" :key="cat.KodeJenjang" :value="cat.KodeJenjang" 
-                                    :selected="cat.KodeJenjang == dataForm.jenjang2">
+                            <option v-for="cat in this.listJenjang" :key="cat.KodeJenjang" :value="cat.KodeJenjang" :selected="cat.KodeJenjang == dataForm.jenjang2">
                                 {{ cat.NamaJenjang }}
                             </option>
                         </select>
@@ -101,8 +97,7 @@
 
                     <div class="form-group">
                         <label for="company">Kurikulum</label>
-                        <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" 
-                                placeholder="Masukan Kurikulum">
+                        <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" placeholder="Masukan Kurikulum">
                     </div>
 
                     <div class="form-group">
@@ -118,6 +113,7 @@
                     <i class="fa fa-spinner fa-spin" /> Loading</button>
             </div>
         </modal>
+        <loading-bar :show="!ready"> </loading-bar>
 
     </div>
     <!--/.row-->
@@ -128,7 +124,6 @@ import modal from 'vue-strap/src/Modal'
 import toastr from 'toastr'
 import UploadFile from '../../../components/UploadFile'
 import DeleteBtn from '../../../components/DeleteBtn'
-import Pagination from '../../../components/Pagination'
 
 export default {
     name: 'Smartebook',
@@ -137,7 +132,6 @@ export default {
         toastr,
         UploadFile,
         DeleteBtn,
-        Pagination,
     },
     data() {
         return {
@@ -153,7 +147,11 @@ export default {
                 nmfile: '',
                 file: '',
                 keterangan: '',
-                myFile: {},
+                myFile: {
+                    uploadFile: '',
+                    fileName: '',
+                    fileType: '',
+                },
             },
             listJenjang: [],
             listKurikulum: [],
@@ -174,12 +172,22 @@ export default {
     },
 
     watch: {
-        primaryModal: function (val) {
-            if (!val){
-                this.dataForm={};
+        primaryModal: function(val) {
+            if (!val) {
+                this.dataForm = {
+                    idsb: '',
+                    nmfile: '',
+                    file: '',
+                    keterangan: '',
+                    myFile: {
+                        uploadFile: '',
+                        fileName: '',
+                        fileType: '',
+                    },
+                };
+                this.errors.clear();
             }
-            this.errors.clear();
-        }
+        },
     },
 
     methods: {
@@ -194,8 +202,6 @@ export default {
                 vm.fileName = files[0].name;
                 vm.myFile = files[0];
 
-                debugger;
-
                 vm.dataForm.myFile.fileName = vm.myFile.name;
                 vm.dataForm.myFile.fileType = vm.myFile.type;
 
@@ -209,19 +215,23 @@ export default {
             }
         },
         fetchSmartebookList(page) {
+            this.ready = false;
             axios.get('api/smartebook?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
 
         popUpEditSmartebook(id) {
+            this.ready = false;
             axios.get('api/smartebook/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
+                    this.ready = true;
                 })
                 .catch((err) => console.error(err));
         },
@@ -237,12 +247,14 @@ export default {
         },
 
         editSmartebook(id) {
+            this.ready = false;
             if (id && id !== "") {
                 axios.put('api/smartebook/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
                         this.fetchSmartebookList();
+                        this.ready = true;
                         toastr.success('Data Berhasil Di Ubah');
                     })
                     .catch((err) => console.error(err));
@@ -252,6 +264,7 @@ export default {
                         this.primaryModal = false;
                         this.dataForm = {};
                         this.fetchSmartebookList();
+                        this.ready = true;
                         toastr.success('Data Berhasil Di Tambah');
                     })
                     .catch((err) => console.error(err));
@@ -259,27 +272,33 @@ export default {
         },
 
         deleteSmartebook(id) {
+            this.ready = false;
             axios.delete('api/smartebook/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.dataForm = {};
                     this.fetchSmartebookList();
+                    this.ready = true;
                     toastr.success('Data Berhasil Di Hapus');
                 })
                 .catch((err) => console.error(err));
         },
 
         getJenjang() {
+            this.ready = false;
             axios.get('api/jenjang/')
                 .then((res) => {
+                    this.ready = true;
                     this.listJenjang = res.data;
                 })
                 .catch((err) => console.error(err));
         },
 
         getKurikulum() {
+            this.ready = false;
             axios.get('api/kurikulum/')
                 .then((res) => {
+                    this.ready = true;
                     this.listKurikulum = res.data;
                 })
                 .catch((err) => console.error(err));
