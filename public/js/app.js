@@ -113732,7 +113732,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "click": _vm.handleClick
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-user"
   }), _vm._v(" Tentang Aku")]), _vm._v(" "), _c('ul', {
     staticClass: "nav-dropdown-items"
   }, [_c('li', {
@@ -113754,7 +113754,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-calendar"
   }), _vm._v(" Kalpen")])], 1), _vm._v(" "), _c('li', {
     staticClass: "nav-item"
   }, [_c('router-link', {
@@ -113764,7 +113764,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-notebook"
   }), _vm._v(" Smart Ebook")])], 1), _vm._v(" "), _c('li', {
     staticClass: "nav-item"
   }, [_c('router-link', {
@@ -113774,7 +113774,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-hourglass"
   }), _vm._v(" Smart Exercise")])], 1), _vm._v(" "), _c('li', {
     staticClass: "nav-item"
   }, [_c('router-link', {
@@ -113784,7 +113784,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-notebook"
   }), _vm._v(" Pikse")])], 1), _vm._v(" "), _c('li', {
     staticClass: "nav-item"
   }, [_c('router-link', {
@@ -113794,7 +113794,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-calculator"
   }), _vm._v(" Rumus")])], 1), _vm._v(" "), _c('li', {
     staticClass: "nav-item"
   }, [_c('router-link', {
@@ -113804,7 +113804,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-book-open"
   }), _vm._v(" Pembahasan Materi")])], 1), _vm._v(" "), _c('li', {
     staticClass: "nav-item"
   }, [_c('router-link', {
@@ -113814,7 +113814,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-control-play"
   }), _vm._v(" Video Pembelajaran")])], 1), _vm._v(" "), _c('li', {
     staticClass: "nav-item"
   }, [_c('router-link', {
@@ -113824,7 +113824,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-graduation"
   }), _vm._v(" Asal Sekolah")])], 1), _vm._v(" "), _c('li', {
     staticClass: "nav-item"
   }, [_c('router-link', {
@@ -113834,7 +113834,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "exact": ""
     }
   }, [_c('i', {
-    staticClass: "icon-puzzle"
+    staticClass: "icon-picture"
   }), _vm._v(" Banner")])], 1)])])], 1)])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true

@@ -28,37 +28,37 @@
         </router-link>
 
          <router-link tag="li" class="nav-item nav-dropdown" :to="{ path: '/master'}" disabled>
-          <div class="nav-link nav-dropdown-toggle" @click="handleClick"><i class="icon-puzzle"></i> Tentang Aku</div>
+          <div class="nav-link nav-dropdown-toggle" @click="handleClick"><i class="icon-user"></i> Tentang Aku</div>
           <ul class="nav-dropdown-items">
             <li class="nav-item">
               <router-link :to="'/master/mititi'" class="nav-link" exact><i class="icon-puzzle"></i> Materi Tips n Trik</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/kalpen'" class="nav-link" exact><i class="icon-puzzle"></i> Kalpen</router-link>
+              <router-link :to="'/master/kalpen'" class="nav-link" exact><i class="icon-calendar"></i> Kalpen</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/smartebook'" class="nav-link" exact><i class="icon-puzzle"></i> Smart Ebook</router-link>
+              <router-link :to="'/master/smartebook'" class="nav-link" exact><i class="icon-notebook"></i> Smart Ebook</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/smartexercise'" class="nav-link" exact><i class="icon-puzzle"></i> Smart Exercise</router-link>
+              <router-link :to="'/master/smartexercise'" class="nav-link" exact><i class="icon-hourglass"></i> Smart Exercise</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/pikse'" class="nav-link" exact><i class="icon-puzzle"></i> Pikse</router-link>
+              <router-link :to="'/master/pikse'" class="nav-link" exact><i class="icon-notebook"></i> Pikse</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/rumus'" class="nav-link" exact><i class="icon-puzzle"></i> Rumus</router-link>
+              <router-link :to="'/master/rumus'" class="nav-link" exact><i class="icon-calculator"></i> Rumus</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/bakmi'" class="nav-link" exact><i class="icon-puzzle"></i> Pembahasan Materi</router-link>
+              <router-link :to="'/master/bakmi'" class="nav-link" exact><i class="icon-book-open"></i> Pembahasan Materi</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/ketela'" class="nav-link" exact><i class="icon-puzzle"></i> Video Pembelajaran</router-link>
+              <router-link :to="'/master/ketela'" class="nav-link" exact><i class="icon-control-play"></i> Video Pembelajaran</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/sekolah'" class="nav-link" exact><i class="icon-puzzle"></i> Asal Sekolah</router-link>
+              <router-link :to="'/master/sekolah'" class="nav-link" exact><i class="icon-graduation"></i> Asal Sekolah</router-link>
             </li>
             <li class="nav-item">
-              <router-link :to="'/master/banner'" class="nav-link" exact><i class="icon-puzzle"></i> Banner</router-link>
+              <router-link :to="'/master/banner'" class="nav-link" exact><i class="icon-picture"></i> Banner</router-link>
             </li>
           </ul>
         </router-link>
