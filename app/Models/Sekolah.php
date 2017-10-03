@@ -21,7 +21,7 @@ class Sekolah extends Model
      *
      * @var array
      */
-     protected $fillable = ['asal_sekolah', 'propinsi', 'kota'];
+     protected $fillable = ['asal_sekolah', 'propinsi', 'kota', 'uploadFile', 'fileName', 'fileType'];
      protected $appends = array('propinsiData' , 'kotaData');
 
      public function getPropinsiDataAttribute()

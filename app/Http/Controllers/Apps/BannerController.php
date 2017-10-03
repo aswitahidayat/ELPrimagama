@@ -27,7 +27,8 @@ class BannerController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Banner::where("judul", "LIKE","%$keyword%")
+        $results = Banner::select('RecID','judul', 'keterangan')
+                            ->where("judul", "LIKE","%$keyword%")
                             ->orWhere("keterangan", "LIKE","%$keyword%")
                             ->orderBy('RecID', 'asc')
                             ->paginate(10);
@@ -70,13 +71,20 @@ class BannerController extends Controller
             'keterangan' => 'required|max:500',
         ]);
 
-        return Banner::create([ 
-            'judul' => $request->judul,
-            'keterangan' => $request->keterangan,
-            'uploadFile' => $request->uploadFile,
-            'fileName' => $request->fileName,
-            'fileType' => $request->fileType,
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Banner::create([ 
+                'judul' => $request->judul,
+                'keterangan' => $request->keterangan,
+            ]);
+        } else {
+            return Banner::create([ 
+                'judul' => $request->judul,
+                'keterangan' => $request->keterangan,
+                'uploadFile' => $request->uploadFile,
+                'fileName' => $request->fileName,
+                'fileType' => $request->fileType,
+            ]);
+        }
     }
 
     /**
@@ -87,8 +95,7 @@ class BannerController extends Controller
      */
     public function show($id)
     {
-        return Banner::where('RecID', $id)
-                        ->first();
+        return Banner::where('RecID', $id)->first();
     }
 
     /**
@@ -115,15 +122,22 @@ class BannerController extends Controller
             'judul' => 'required|max:500',
             'keterangan' => 'required|max:500',
         ]);
-
-        return Banner::where('RecID', $id)
-                        ->update([ 
-                            'judul' => $request->judul,
-                            'keterangan' => $request->keterangan,
-                            'uploadFile' => $request->uploadFile,
-                            'fileName' => $request->fileName,
-                            'fileType' => $request->fileType,
-                        ]);
+        if ($request->myFile['uploadFile']){
+            return Banner::where('RecID', $id)
+                ->update([ 
+                    'judul' => $request->judul,
+                    'keterangan' => $request->keterangan,
+                    'uploadFile' => $request->uploadFile,
+                    'fileName' => $request->fileName,
+                    'fileType' => $request->fileType,
+                ]);
+        } else {
+            return Banner::where('RecID', $id)
+            ->update([ 
+                'judul' => $request->judul,
+                'keterangan' => $request->keterangan,
+            ]);
+        }
     }
 
     /**

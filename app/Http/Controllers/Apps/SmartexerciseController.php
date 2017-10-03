@@ -27,7 +27,8 @@ class SmartexerciseController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Smartexercise::where("nmfile", "LIKE","%$keyword%")
+        $results = Smartexercise::select('idse','nmfile', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum')
+                                    ->where("nmfile", "LIKE","%$keyword%")
                                     ->orWhere("keterangan", "LIKE","%$keyword%")
                                     ->orderBy('idse', 'asc')
                                     ->paginate(10);
@@ -70,13 +71,26 @@ class SmartexerciseController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Smartexercise::create([ 
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan,
-            'jenjang' => $request->jenjang,
-            'jenjang2' => $request->jenjang2,
-            'kurikulum' => $request->kurikulum
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Smartexercise::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'jenjang' => $request->jenjang,
+                'jenjang2' => $request->jenjang2,
+                'kurikulum' => $request->kurikulum,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+        } else {
+            return Smartexercise::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'jenjang' => $request->jenjang,
+                'jenjang2' => $request->jenjang2,
+                'kurikulum' => $request->kurikulum,
+            ]);
+        }
     }
 
     /**
@@ -116,14 +130,28 @@ class SmartexerciseController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Smartexercise::where('idse', $id)
-            ->update([ 
-                'nmfile' => $request->nmfile,
-                'keterangan' => $request->keterangan,
-                'jenjang' => $request->jenjang,
-                'jenjang2' => $request->jenjang2,
-                'kurikulum' => $request->kurikulum
-            ]);
+        if ($request->myFile['uploadFile']){
+            return Smartexercise::where('idse', $id)
+                ->update([ 
+                    'nmfile' => $request->nmfile,
+                    'keterangan' => $request->keterangan,
+                    'jenjang' => $request->jenjang,
+                    'jenjang2' => $request->jenjang2,
+                    'kurikulum' => $request->kurikulum,
+                    'uploadFile' => $request->myFile['uploadFile'],
+                    'fileName' => $request->myFile['fileName'],
+                    'fileType' => $request->myFile['fileType'],
+                ]);
+        } else {
+            return Smartexercise::where('idse', $id)
+                ->update([ 
+                    'nmfile' => $request->nmfile,
+                    'keterangan' => $request->keterangan,
+                    'jenjang' => $request->jenjang,
+                    'jenjang2' => $request->jenjang2,
+                    'kurikulum' => $request->kurikulum,
+                ]);
+        }
     }
 
     /**

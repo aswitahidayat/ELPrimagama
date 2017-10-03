@@ -24,7 +24,7 @@ class SmartEbook extends Model
      *
      * @var array
      */
-    protected $fillable = ['nmfile', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum', 'uploadFile', 'fileName', 'fileType'];
+    protected $fillable = ['nmfile', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum', 'uploadFile', 'fileName', 'fileType', 'uploadFile', 'fileName', 'fileType'];
     protected $appends = array('jenjangdata' , 'jenjang2data', 'myFile');
 
     public function getJenjangdataAttribute()

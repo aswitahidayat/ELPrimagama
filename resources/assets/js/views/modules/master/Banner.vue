@@ -59,18 +59,21 @@
             <div class="card-block">
                 <div class="form-group">
                     <label for="company">Judul</label>
-                    <input name="judul" type="text" class="form-control" v-model="dataForm.judul" v-validate="'required'" value="{ dataForm.jdudul }" placeholder="Masukan Nama File">
+                    <input name="judul" type="text" class="form-control" v-model="dataForm.judul" 
+                    v-validate="'required'" value="{ dataForm.jdudul }" placeholder="Masukan Nama File" maxlength="50">
                     <span v-show="errors.has('judul')" class="help-block">judul diperlukan</span>
                 </div>
 
                 <div class="form-group">
                     <label for="company">Keterangan</label>
-                    <input name="keterangan" type="text" class="form-control" v-model="dataForm.keterangan" v-validate="'required'" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                    <input name="keterangan" type="text" class="form-control" v-model="dataForm.keterangan" 
+                    v-validate="'required'" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan" maxlength="50">
                     <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
                 </div>
 
                 <div class="form-group">
                     <upload-file :myFile="dataForm.myFile" :onFileChange="onFileChange" />
+                    <span v-if="invalidFile" class="help-block">file tidak valid</span>
                 </div>
 
             </div>
@@ -108,6 +111,7 @@ export default {
             keyword: '',
             primaryModal: false,
             deleteModal: false,
+            invalidFile: false,
             list: [],
             dataForm: {
                 id: '',
@@ -148,30 +152,37 @@ export default {
                 };
             }
             this.errors.clear();
+            this.invalidFile = false;
         }
     },
 
     methods: {
         onFileChange(e) {
             if (e) {
-                var vm = this;
+                if (e.target.files[0].type.match(/image.*/) ){
+                    var vm = this;
 
-                vm.ready = false;
-                let files = e.target.files || e.dataTransfer.files;
-                if (!files.length)
-                    return;
-                vm.fileName = files[0].name;
-                vm.myFile = files[0];
+                    vm.ready = false;
+                    vm.invalidFile = false;
+                    let files = e.target.files || e.dataTransfer.files;
+                    if (!files.length)
+                        return;
+                    vm.fileName = files[0].name;
+                    vm.myFile = files[0];
 
-                var reader = new FileReader();
-                reader.onloadend = function(event) {
-                    vm.dataForm.myFile.fileName = vm.myFile.name;
+                    vm.dataForm.myFile.fileName = vm.fileName;
                     vm.dataForm.myFile.fileType = vm.myFile.type;
-                    vm.dataForm.myFile.uploadFile = event.target.result;
-                    vm.ready = true;
-                };
 
-                reader.readAsDataURL(vm.myFile);
+                    var reader = new FileReader();
+                    reader.onloadend = function(event) {
+                        vm.dataForm.myFile.uploadFile = event.target.result;
+                        vm.ready = true;
+                    };
+
+                    reader.readAsDataURL(vm.myFile);
+                } else {
+                    this.invalidFile = true;
+                }
             }
         },
         fetchBannerList(page) {

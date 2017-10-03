@@ -27,7 +27,8 @@ class BakmiController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Bakmi::where("nmfile", "LIKE","%$keyword%")
+        $results = Bakmi::select('RecID','nmfile', 'keterangan')
+                ->where("nmfile", "LIKE","%$keyword%")
                 ->orWhere("keterangan", "LIKE","%$keyword%")
                 ->orderBy('RecID', 'asc')
                 ->paginate(10);
@@ -69,10 +70,20 @@ class BakmiController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Bakmi::create([ 
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Bakmi::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+        } else {
+            return Bakmi::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan
+            ]);
+        }
     }
 
     /**
@@ -111,12 +122,23 @@ class BakmiController extends Controller
             'nmfile' => 'required|max:500',
             'keterangan' => 'required|max:500'
         ]);
-
-        return Bakmi::where('RecID', $id)
-        ->update([
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Bakmi::where('RecID', $id)
+            ->update([
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+        } else {
+            return Bakmi::where('RecID', $id)
+            ->update([
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan
+            ]);
+        }
+        
     }
 
     /**

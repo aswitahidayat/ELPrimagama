@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers\Apps;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Mititi;
+use App\Models\Authentication;
+use JWTAuth;
+use JWTAuthException;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-class MititiController extends Controller
+class AuthenticationController extends Controller
 {
+    use AuthenticatesUsers;
     /**
      *
      * Constructor
@@ -26,25 +33,53 @@ class MititiController extends Controller
      */
     public function index()
     {
-        $keyword  = $this->request->input('keyword');
-        $results = Mititi::select('RecID','nmfile', 'keterangan')
-                ->where("nmfile", "LIKE","%$keyword%")
-                ->orWhere("keterangan", "LIKE","%$keyword%")
-                ->orderBy('RecID', 'asc')
-                ->paginate(10);
-        $response = [
-            'pagination' => [
-                'total' => $results->total(),
-                'per_page' => $results->perPage(),
-                'current_page' => $results->currentPage(),
-                'last_page' => $results->lastPage(),
-                'from' => $results->firstItem(),
-                'to' => $results->lastItem()
-            ],
-            'data' => $results->all()
-        ];
         
-        return $response;
+        return "aa";
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+     public function doLogin(Request $request)
+     {
+
+        $user = Authentication::where('email', $request->email)->first();
+        
+        if( $user && $user->password == md5($request->password) )
+        {
+            Auth::login($user); /// will log the user in for you
+        
+            //return Redirect::intended('dashboard');
+
+            $token = $user->createToken('Token Name')->accessToken;
+            
+            return $token;
+        }
+        else
+        {
+            return "gagal";
+        }
+
+        // $credentials = $request->only('email', 'password');
+        // return $credentials;
+        // $token = null;
+        // try {
+        //    if (!$token = JWTAuth::attempt($credentials)) {
+        //     return response()->json(['invalid_email_or_password'], 422);
+        //    }
+        // } catch (JWTAuthException $e) {
+        //     return response()->json(['failed_to_create_token'], 500);
+        // }
+        // return response()->json(compact('token'));
+
+     }
+
+     public function getAuthUser(Request $request){
+        $user = JWTAuth::toUser($request->token);
+        return response()->json(['result' => $user]);
     }
 
     /**
@@ -70,21 +105,10 @@ class MititiController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        if ($request->myFile['uploadFile']){
-            return Mititi::create([ 
-                'nmfile' => $request->nmfile,
-                'keterangan' => $request->keterangan,
-                'uploadFile' => $request->myFile['uploadFile'],
-                'fileName' => $request->myFile['fileName'],
-                'fileType' => $request->myFile['fileType'],
-            ]);
-        } else {
-            return Mititi::create([ 
-                'nmfile' => $request->nmfile,
-                'keterangan' => $request->keterangan,
-            ]);
-        }
-        
+        return Mititi::create([ 
+            'nmfile' => $request->nmfile,
+            'keterangan' => $request->keterangan
+        ]);
     }
 
     /**
@@ -124,23 +148,11 @@ class MititiController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        
-        if ($request->myFile['uploadFile']){
-            return Mititi::where('RecID', $id)
-            ->update([
-                'nmfile' => $request->nmfile,
-                'keterangan' => $request->keterangan,
-                'uploadFile' => $request->myFile['uploadFile'],
-                'fileName' => $request->myFile['fileName'],
-                'fileType' => $request->myFile['fileType'],
-            ]);
-        } else {
-            return Mititi::where('RecID', $id)
-            ->update([
-                'nmfile' => $request->nmfile,
-                'keterangan' => $request->keterangan,
-            ]);
-        }
+        return Mititi::where('RecID', $id)
+        ->update([
+            'nmfile' => $request->nmfile,
+            'keterangan' => $request->keterangan
+        ]);
     }
 
     /**

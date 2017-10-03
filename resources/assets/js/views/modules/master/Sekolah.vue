@@ -63,7 +63,7 @@
                     <div class="form-group has-error">
                         <label for="company">Asal Sekolah</label>
                         <input name="asal sekolah" type="text" class="form-control" v-validate="'required'" 
-                            v-model="dataForm.asal_sekolah" value="{ dataForm.asal_sekolah }" placeholder="Asal Sekolah">
+                            v-model="dataForm.asal_sekolah" value="{ dataForm.asal_sekolah }" placeholder="Asal Sekolah" maxlength="50">
                         <span v-show="errors.has('asal sekolah')" class="help-block">asal sekolah diperlukan</span>
                     </div>
 

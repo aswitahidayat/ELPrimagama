@@ -27,7 +27,8 @@ class PikseController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Pikse::where("nmfile", "LIKE","%$keyword%")
+        $results = Pikse::select('idpikse','nmfile', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum')
+                            ->where("nmfile", "LIKE","%$keyword%")
                             ->orWhere("keterangan", "LIKE","%$keyword%")
                             ->orderBy('idpikse', 'asc')
                             ->paginate(10);
@@ -70,13 +71,26 @@ class PikseController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Pikse::create([ 
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan,
-            'jenjang' => $request->jenjang,
-            'jenjang2' => $request->jenjang2,
-            'kurikulum' => $request->kurikulum
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Pikse::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'jenjang' => $request->jenjang,
+                'jenjang2' => $request->jenjang2,
+                'kurikulum' => $request->kurikulum,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+        } else {
+            return Pikse::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'jenjang' => $request->jenjang,
+                'jenjang2' => $request->jenjang2,
+                'kurikulum' => $request->kurikulum
+            ]);
+        }
     }
 
     /**
@@ -116,14 +130,28 @@ class PikseController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Pikse::where('idpikse', $id)
-            ->update([ 
-                'nmfile' => $request->nmfile,
-                'keterangan' => $request->keterangan,
-                'jenjang' => $request->jenjang,
-                'jenjang2' => $request->jenjang2,
-                'kurikulum' => $request->kurikulum
-            ]);
+        if ($request->myFile['uploadFile']){
+            return Pikse::where('idpikse', $id)
+                ->update([ 
+                    'nmfile' => $request->nmfile,
+                    'keterangan' => $request->keterangan,
+                    'jenjang' => $request->jenjang,
+                    'jenjang2' => $request->jenjang2,
+                    'kurikulum' => $request->kurikulum,
+                    'uploadFile' => $request->myFile['uploadFile'],
+                    'fileName' => $request->myFile['fileName'],
+                    'fileType' => $request->myFile['fileType'],
+                ]);
+        } else {
+            return Pikse::where('idpikse', $id)
+                ->update([ 
+                    'nmfile' => $request->nmfile,
+                    'keterangan' => $request->keterangan,
+                    'jenjang' => $request->jenjang,
+                    'jenjang2' => $request->jenjang2,
+                    'kurikulum' => $request->kurikulum
+                ]);
+        }
     }
 
     /**

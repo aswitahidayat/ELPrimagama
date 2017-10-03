@@ -27,7 +27,8 @@ class RumusController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Rumus::where("nmfile", "LIKE","%$keyword%")
+        $results = Rumus::select('RecID','nmfile', 'keterangan')
+                ->where("nmfile", "LIKE","%$keyword%")
                 ->orWhere("keterangan", "LIKE","%$keyword%")
                 ->orderBy('RecID', 'asc')
                 ->paginate(10);
@@ -69,10 +70,20 @@ class RumusController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Rumus::create([ 
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Rumus::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+        } else {
+            return Rumus::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+            ]);
+        }
     }
 
     /**
@@ -112,11 +123,21 @@ class RumusController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Rumus::where('RecID', $id)
-        ->update([
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Rumus::where('RecID', $id)
+            ->update([
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+            return Rumus::where('RecID', $id)
+            ->update([
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan
+            ]);
+        }
     }
 
     /**

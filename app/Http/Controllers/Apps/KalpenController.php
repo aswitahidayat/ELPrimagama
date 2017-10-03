@@ -27,7 +27,8 @@ class KalpenController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Kalpen::where("judul", "LIKE","%$keyword%")
+        $results = Kalpen::select('RecID','judul', 'keterangan', 'tanggal')
+                            ->where("judul", "LIKE","%$keyword%")
                             ->orWhere("keterangan", "LIKE","%$keyword%")
                             ->orderBy('RecID', 'asc')
                             ->paginate(10);
@@ -71,11 +72,22 @@ class KalpenController extends Controller
             'tanggal' => 'required'
         ]);
 
-        return Kalpen::firstOrCreate([ 
-            'judul' => $request->judul,
-            'keterangan' => $request->keterangan,
-            'tanggal' => $request->tanggal
-        ]);
+        if ($request->myFile['uploadFile']){ 
+            return Kalpen::firstOrCreate([ 
+                'judul' => $request->judul,
+                'keterangan' => $request->keterangan,
+                'tanggal' => $request->tanggal,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+        } else {
+            return Kalpen::firstOrCreate([ 
+                'judul' => $request->judul,
+                'keterangan' => $request->keterangan,
+                'tanggal' => $request->tanggal,
+            ]);
+        }
     }
 
     /**
@@ -116,12 +128,24 @@ class KalpenController extends Controller
             'tanggal' => 'required'
         ]);
 
-        return Kalpen::where('RecID', $id)
+        if ($request->myFile['uploadFile']){ 
+            return Kalpen::where('RecID', $id)
             ->update([
                 'judul' => $request->judul,
                 'keterangan' => $request->keterangan,
-                'tanggal' => $request->tanggal
+                'tanggal' => $request->tanggal,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
             ]);
+        } else {
+            return Kalpen::where('RecID', $id)
+            ->update([
+                'judul' => $request->judul,
+                'keterangan' => $request->keterangan,
+                'tanggal' => $request->tanggal,
+            ]);
+        }
     }
 
     /**

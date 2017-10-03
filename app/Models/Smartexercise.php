@@ -22,8 +22,8 @@ class Smartexercise extends Model
      *
      * @var array
      */
-     protected $fillable = ['nama', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum'];
-     protected $appends = array('jenjangdata' , 'jenjang2data');
+     protected $fillable = ['nama', 'keterangan', 'jenjang', 'jenjang2', 'kurikulum', 'uploadFile', 'fileName', 'fileType'];
+     protected $appends = array('jenjangdata' , 'jenjang2data', 'myFile');
 
      public function getJenjangdataAttribute()
      {
@@ -47,14 +47,14 @@ class Smartexercise extends Model
          return $jenjang2s;
      }
 
-    //  public function getKurikulumdataAttribute()
-    //  {
-    //      $ids = substr($this->kurikulum, 0, 2);
-    //      try { 
-    //          $kurikulums = Kurikulum::where('KodeKurikulum', $ids)->firstOrFail();
-    //     } catch(ModelNotFoundException $e) {
-    //         return '{}';
-    //     }
-    //      return $kurikulums;
-    //  }
+     public function getMyFileAttribute()
+     {
+         $myFIle = [
+             'uploadFile' => $this->uploadFile,
+             'fileName' => $this->fileName,
+             'fileType' => $this->fileType,
+         ];
+         
+         return $myFIle; 
+     }
 }

@@ -66,13 +66,13 @@
                 <form>
                     <div class="form-group has-error">
                         <label for="company">File</label>
-                        <input name="file" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan File">
+                        <input name="file" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan File" maxlength="50">
                         <span v-show="errors.has('file')" class="help-block">file diperlukan</span>
                     </div>
 
                     <div class="form-group">
                         <label for="company">Keterangan</label>
-                        <input name="keterangan" type="text" class="form-control" v-validate="'required'" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                        <input name="keterangan" type="text" class="form-control" v-validate="'required'" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan" maxlength="50">
                         <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
                     </div>
 
@@ -97,11 +97,12 @@
 
                     <div class="form-group">
                         <label for="company">Kurikulum</label>
-                        <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" placeholder="Masukan Kurikulum">
+                        <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" placeholder="Masukan Kurikulum" maxlength="50">
                     </div>
 
                     <div class="form-group">
                         <upload-file :myFile="dataForm.myFile" :onFileChange="onFileChange" />
+                        <span v-if="invalidFile" class="help-block">file tidak valid</span>
                     </div>
                 </form>
 
@@ -141,6 +142,7 @@ export default {
             myFile: '',
             primaryModal: false,
             deleteModal: false,
+            invalidFile: false,
             list: [],
             dataForm: {
                 idsb: '',
@@ -186,6 +188,7 @@ export default {
                     },
                 };
                 this.errors.clear();
+                this.invalidFile = false;
             }
         },
     },
@@ -193,25 +196,31 @@ export default {
     methods: {
         onFileChange(e) {
             if (e) {
-                var vm = this;
+                if (e.target.files[0].type == 'application/pdf' || e.target.files[0].type == 'application/x-shockwave-flash'){
+                    var vm = this;
 
-                vm.ready = false;
-                let files = e.target.files || e.dataTransfer.files;
-                if (!files.length)
-                    return;
-                vm.fileName = files[0].name;
-                vm.myFile = files[0];
+                    vm.invalidFile = false;
+                    vm.ready = false;
+                    let files = e.target.files || e.dataTransfer.files;
+                    if (!files.length)
+                        return;
+                    vm.fileName = files[0].name;
+                    vm.myFile = files[0];
 
-                vm.dataForm.myFile.fileName = vm.myFile.name;
-                vm.dataForm.myFile.fileType = vm.myFile.type;
 
-                var reader = new FileReader();
-                reader.onloadend = function(event) {
-                    vm.dataForm.myFile.uploadFile = event.target.result;
-                    vm.ready = true;
-                };
+                    vm.dataForm.myFile.fileName = vm.myFile.name;
+                    vm.dataForm.myFile.fileType = vm.myFile.type;
 
-                reader.readAsDataURL(vm.myFile);
+                    var reader = new FileReader();
+                    reader.onloadend = function(event) {
+                        vm.dataForm.myFile.uploadFile = event.target.result;
+                        vm.ready = true;
+                    };
+
+                    reader.readAsDataURL(vm.myFile);
+                } else {
+                    this.invalidFile = true;
+                }
             }
         },
         fetchSmartebookList(page) {

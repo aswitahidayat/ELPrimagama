@@ -66,13 +66,15 @@
                 <form>
                     <div class="form-group has-error">
                         <label for="company">File</label>
-                        <input name="file" type="text" class="form-control" v-model="dataForm.nmfile" v-validate="'required'" value="{ dataForm.nmfile }" placeholder="Masukan Nama" required>
+                        <input name="file" type="text" class="form-control" v-model="dataForm.nmfile" v-validate="'required'" 
+                        value="{ dataForm.nmfile }" placeholder="Masukan Nama" maxlength="50">
                         <span v-show="errors.has('file')" class="help-block">file diperlukan</span>
                     </div>
 
                     <div class="form-group">
                         <label for="company">Keterangan</label>
-                        <input name="keterangan" type="text" class="form-control" v-model="dataForm.keterangan" v-validate="'required'" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                        <input name="keterangan" type="text" class="form-control" v-model="dataForm.keterangan" v-validate="'required'" 
+                        value="{ dataForm.keterangan }" placeholder="Masukan Keterangan" maxlength="50">
                         <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
                     </div>
 
@@ -97,8 +99,14 @@
 
                     <div class="form-group">
                         <label for="company">Kurikulum</label>
-                        <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" placeholder="Masukan Kurikulum">
+                        <input type="text" class="form-control" v-model="dataForm.kurikulum" value="{ dataForm.kurikulum }" placeholder="Masukan Kurikulum" maxlength="50">
                     </div>
+
+                    <div class="form-group">
+                        <upload-file :myFile="dataForm.myFile" :onFileChange="onFileChange" />
+                        <span v-if="invalidFile" class="help-block">file tidak valid</span>
+                    </div>
+
                 </form>
 
             </div>
@@ -119,6 +127,7 @@
 import modal from 'vue-strap/src/Modal'
 import toastr from 'toastr'
 import DeleteBtn from '../../../components/DeleteBtn'
+import UploadFile from '../../../components/UploadFile'
 
 export default {
     name: 'Smartexercise',
@@ -126,6 +135,7 @@ export default {
         modal,
         toastr,
         DeleteBtn,
+        UploadFile,
     },
     data() {
         return {
@@ -133,11 +143,17 @@ export default {
             keyword: '',
             primaryModal: false,
             deleteModal: false,
+            invalidFile: false,
             list: [],
             dataForm: {
                 idse: '',
                 file: '',
-                keterangan: ''
+                keterangan: '',
+                myFile: {
+                    uploadFile: '',
+                    fileName: '',
+                    fileType: '',
+                },
             },
             listJenjang: [],
             listKurikulum: [],
@@ -160,13 +176,54 @@ export default {
     watch: {
         primaryModal: function (val) {
             if (!val){
-                this.dataForm={};
+                this.dataForm = {
+                    idsb: '',
+                    nmfile: '',
+                    file: '',
+                    keterangan: '',
+                    myFile: {
+                        uploadFile: '',
+                        fileName: '',
+                        fileType: '',
+                    },
+                };
             }
             this.errors.clear();
+            this.invalidFile = false;
         }
     },
 
     methods: {
+        onFileChange(e) {
+            if (e) {
+                if (e.target.files[0].type == 'application/pdf' || e.target.files[0].type == 'application/x-shockwave-flash'){
+                    var vm = this;
+
+                    vm.invalidFile = false;
+                    vm.ready = false;
+                    let files = e.target.files || e.dataTransfer.files;
+                    if (!files.length)
+                        return;
+                    vm.fileName = files[0].name;
+                    vm.myFile = files[0];
+
+
+                    vm.dataForm.myFile.fileName = vm.myFile.name;
+                    vm.dataForm.myFile.fileType = vm.myFile.type;
+
+                    var reader = new FileReader();
+                    reader.onloadend = function(event) {
+                        vm.dataForm.myFile.uploadFile = event.target.result;
+                        vm.ready = true;
+                    };
+
+                    reader.readAsDataURL(vm.myFile);
+                } else {
+                    this.invalidFile = true;
+                }
+            }
+        },
+
         fetchSmartexerciseList(page) {
             this.ready = false;
             axios.get('api/smartexercise?page=' + page + '&keyword=' + this.keyword)

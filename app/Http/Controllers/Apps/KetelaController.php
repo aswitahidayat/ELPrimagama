@@ -27,7 +27,8 @@ class KetelaController extends Controller
     public function index()
     {
         $keyword  = $this->request->input('keyword');
-        $results = Ketela::where("nmfile", "LIKE","%$keyword%")
+        $results = Ketela::select('RecID','nmfile', 'keterangan')
+                ->where("nmfile", "LIKE","%$keyword%")
                 ->orWhere("keterangan", "LIKE","%$keyword%")
                 ->orderBy('RecID', 'asc')
                 ->paginate(10);
@@ -69,10 +70,20 @@ class KetelaController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Ketela::create([ 
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Ketela::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+        } else {
+            return Ketela::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan
+            ]);
+        }
     }
 
     /**
@@ -112,11 +123,22 @@ class KetelaController extends Controller
             'keterangan' => 'required|max:500'
         ]);
 
-        return Ketela::where('RecID', $id)
-        ->update([
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Ketela::where('RecID', $id)
+                ->update([
+                    'nmfile' => $request->nmfile,
+                    'keterangan' => $request->keterangan,
+                    'uploadFile' => $request->myFile['uploadFile'],
+                    'fileName' => $request->myFile['fileName'],
+                    'fileType' => $request->myFile['fileType'],
+                ]);
+        } else {
+            return Ketela::where('RecID', $id)
+                ->update([
+                    'nmfile' => $request->nmfile,
+                    'keterangan' => $request->keterangan
+                ]);
+        }
     }
 
     /**

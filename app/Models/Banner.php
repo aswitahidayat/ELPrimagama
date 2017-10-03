@@ -19,7 +19,7 @@ class Banner     extends Model
      *
      * @var array
      */
-     protected $fillable = ['judul', 'keterangan', 'img'];
+     protected $fillable = ['judul', 'keterangan', 'img', 'uploadFile', 'fileName', 'fileType'];
      protected $appends = array('myFile');
      
      public function getMyFileAttribute()

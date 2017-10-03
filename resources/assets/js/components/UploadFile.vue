@@ -59,12 +59,22 @@ export default {
         modal,
     },
     events: {
-        showDialogChild: function() {
-            this.showDialog();
-        }
+        
     },
     methods: {
-        showDialog() {
+        onChange(e) {
+            if (e) {
+                var vm = this;
+                let files = e.target.files || e.dataTransfer.files;
+                if (!files.length)
+                    return;
+                    
+                var myFileTemp = files[0];
+
+                if (myFileTemp.type == 'application/pdf'){
+                    this.onFileChange;
+                }
+            }
         },
 
     }

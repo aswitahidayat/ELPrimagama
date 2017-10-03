@@ -72,17 +72,26 @@ class SmartebookController extends Controller
             'nmfile' => 'required|max:500',
             'keterangan' => 'required|max:500'
         ]);
-
-        return Smartebook::create([ 
-            'nmfile' => $request->nmfile,
-            'keterangan' => $request->keterangan,
-            'jenjang' => $request->jenjang,
-            'jenjang2' => $request->jenjang2,
-            'kurikulum' => $request->kurikulum,
-            'uploadFile' => $request->uploadFile,
-            'fileName' => $request->fileName,
-            'fileType' => $request->fileType,
-        ]);
+        if ($request->myFile['uploadFile']){
+            return Smartebook::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'jenjang' => $request->jenjang,
+                'jenjang2' => $request->jenjang2,
+                'kurikulum' => $request->kurikulum,
+                'uploadFile' => $request->myFile['uploadFile'],
+                'fileName' => $request->myFile['fileName'],
+                'fileType' => $request->myFile['fileType'],
+            ]);
+        } else {
+            return Smartebook::create([ 
+                'nmfile' => $request->nmfile,
+                'keterangan' => $request->keterangan,
+                'jenjang' => $request->jenjang,
+                'jenjang2' => $request->jenjang2,
+                'kurikulum' => $request->kurikulum,
+            ]);
+        }
     }
 
     /**
@@ -121,19 +130,29 @@ class SmartebookController extends Controller
             'nmfile' => 'required|max:500',
             'keterangan' => 'required|max:500'
         ]);
-        //$a = DB::raw("CONVERT(VARBINARY(MAX), '$request->uploadFilez')");
 
-        return Smartebook::where('idsb', $id)
-            ->update([ 
-                'nmfile' => $request->nmfile,
-                'keterangan' => $request->keterangan,
-                'jenjang' => $request->jenjang,
-                'jenjang2' => $request->jenjang2,
-                'kurikulum' => $request->kurikulum,
-                'uploadFile' => $request->myFile['uploadFile'],
-                'fileName' => $request->myFile['fileName'],
-                'fileType' => $request->myFile['fileType'],
-            ]);
+        if ($request->myFile['uploadFile']){
+            return Smartebook::where('idsb', $id)
+                ->update([ 
+                    'nmfile' => $request->nmfile,
+                    'keterangan' => $request->keterangan,
+                    'jenjang' => $request->jenjang,
+                    'jenjang2' => $request->jenjang2,
+                    'kurikulum' => $request->kurikulum,
+                    'uploadFile' => $request->myFile['uploadFile'],
+                    'fileName' => $request->myFile['fileName'],
+                    'fileType' => $request->myFile['fileType'],
+                ]);
+        } else {
+            return Smartebook::where('idsb', $id)
+                ->update([ 
+                    'nmfile' => $request->nmfile,
+                    'keterangan' => $request->keterangan,
+                    'jenjang' => $request->jenjang,
+                    'jenjang2' => $request->jenjang2,
+                    'kurikulum' => $request->kurikulum,
+                ]);
+        }
     }
 
     /**

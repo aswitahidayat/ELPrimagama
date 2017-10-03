@@ -45,7 +45,7 @@
                         </tbody>
                     </table>
                     <Pagination :pagination="pagination" :fetchFunc="fetchMititiList"> </Pagination>
-                    
+
                 </div>
             </div>
         </div>
@@ -59,14 +59,19 @@
             <div class="card-block">
                 <div class="form-group">
                     <label>File</label>
-                    <input name="nama" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File">
+                    <input name="nama" type="text" class="form-control" v-validate="'required'" v-model="dataForm.nmfile" value="{ dataForm.nmfile }" placeholder="Masukan Nama File" maxlength="50">
                     <span v-show="errors.has('nama')" class="help-block">nama diperlukan</span>
                 </div>
 
                 <div class="form-group">
                     <label>Keterangan</label>
-                    <input name="keterangan" type="text" class="form-control" v-validate="'required'" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan">
+                    <input name="keterangan" type="text" class="form-control" v-validate="'required'" v-model="dataForm.keterangan" value="{ dataForm.keterangan }" placeholder="Masukan Keterangan" maxlength="50">
                     <span v-show="errors.has('keterangan')" class="help-block">keterangan diperlukan</span>
+                </div>
+
+                <div class="form-group">
+                    <upload-file :myFile="dataForm.myFile" :onFileChange="onFileChange" />
+                    <span v-if="invalidFile" class="help-block">file tidak valid</span>
                 </div>
 
             </div>
@@ -86,6 +91,7 @@
 import modal from 'vue-strap/src/Modal'
 import toastr from 'toastr'
 import DeleteBtn from '../../../components/DeleteBtn'
+import UploadFile from '../../../components/UploadFile'
 
 export default {
     name: 'TipsNTrik',
@@ -93,6 +99,7 @@ export default {
         modal,
         toastr,
         DeleteBtn,
+        UploadFile,
     },
     data() {
         return {
@@ -100,11 +107,17 @@ export default {
             keyword: '',
             primaryModal: false,
             deleteModal: false,
+            invalidFile: false,
             list: [],
             dataForm: {
                 id: '',
                 nmfile: '',
-                keterangan: ''
+                keterangan: '',
+                myFile: {
+                    uploadFile: '',
+                    fileName: '',
+                    fileType: '',
+                },
             },
             pagination: {
                 total: 0,
@@ -121,15 +134,55 @@ export default {
     },
 
     watch: {
-        primaryModal: function (val) {
-            if (!val){
-                this.dataForm={};
+        primaryModal: function(val) {
+            if (!val) {
+                this.dataForm = {
+                    id: '',
+                    nmfile: '',
+                    keterangan: '',
+                    myFile: {
+                        uploadFile: '',
+                        fileName: '',
+                        fileType: '',
+                    },
+                };
             }
             this.errors.clear();
+            this.invalidFile = false;
         }
     },
 
     methods: {
+        onFileChange(e) {
+            if (e) {
+                if (e.target.files[0].type == 'application/pdf' || e.target.files[0].type == 'application/x-shockwave-flash') {
+                    var vm = this;
+
+                    vm.invalidFile = false;
+                    vm.ready = false;
+                    let files = e.target.files || e.dataTransfer.files;
+                    if (!files.length)
+                        return;
+                    vm.fileName = files[0].name;
+                    vm.myFile = files[0];
+
+                    vm.dataForm.myFile.fileName = vm.myFile.name;
+                    vm.dataForm.myFile.fileType = vm.myFile.type;
+
+                    var reader = new FileReader();
+                    reader.onloadend = function(event) {
+                        vm.dataForm.myFile.uploadFile = event.target.result;
+                        vm.ready = true;
+                    };
+
+                    reader.readAsDataURL(vm.myFile);
+                } else {
+                    this.invalidFile = true;
+                }
+
+            }
+        },
+
         fetchMititiList(page) {
             this.ready = false;
             axios.get('api/mititi?page=' + page + '&keyword=' + this.keyword)
