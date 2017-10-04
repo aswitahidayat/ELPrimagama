@@ -28,6 +28,8 @@ import Rumus from '../views/modules/master/Rumus';
 import Bakmi from '../views/modules/master/Bakmi';
 import Ketela from '../views/modules/master/Ketela';
 import Sekolah from '../views/modules/master/Sekolah';
+import Pesan from '../views/modules/master/Pesan';
+import SemuaPesan from '../views/modules/master/SemuaPesan';
 
 Vue.use(Router);
 
@@ -51,6 +53,7 @@ export default new Router({
           path: 'master',
           redirect: '/master/mititi',
           name: 'Master',
+          auth: true,
           component: {
             render (c) { return c('router-view'); }
           },
@@ -104,6 +107,16 @@ export default new Router({
               path: 'sekolah',
               name: 'Asal Sokolah',
               component: Sekolah,
+            },
+            {
+              path: 'pesan',
+              name: 'Pesan',
+              component: Pesan,
+            },
+            {
+              path: 'semuapesan',
+              name: 'Semua Pesan',
+              component: SemuaPesan,
             },
           ]
         }

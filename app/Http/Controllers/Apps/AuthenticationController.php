@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Authentication;
-use JWTAuth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
 use JWTAuthException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -50,13 +51,26 @@ class AuthenticationController extends Controller
         
         if( $user && $user->password == md5($request->password) )
         {
-            Auth::login($user); /// will log the user in for you
+            //$userA = Auth::login($user); /// will log the user in for you
         
             //return Redirect::intended('dashboard');
 
-            $token = $user->createToken('Token Name')->accessToken;
+            //$token = $user->createToken('Token Name')->accessToken;
             
-            return $token;
+            //return $user;
+
+            $credentials = $request->only('email', 'password');
+
+            try {
+                $token = JWTAuth::attempt(              $credentials);
+                if (!$token) {
+                    return response()->json(['error' => 'invalid'], 401);
+                }
+            } catch (JWTException $e) {
+                return response()->json(['error' => "couldn't create"], 500);
+            }
+    
+            return response()->json(compact('token'));
         }
         else
         {

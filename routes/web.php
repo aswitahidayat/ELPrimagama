@@ -32,8 +32,13 @@ Route::prefix('api')->group(function() {
     Route::resource('ketela', 'Apps\KetelaController');
     Route::resource('sekolah', 'Apps\SekolahController');
     Route::resource('banner', 'Apps\BannerController');
+    Route::resource('pesan', 'Apps\PesanController');
+    Route::resource('user', 'Apps\UserController');
     Route::get('login', 'Apps\AuthenticationController@index');
-    Route::post('login', 'Apps\AuthenticationController@doLogin'); 
+    Route::post('login', 'Apps\AuthenticationController@doLogin');
+    Route::get('hitungpesan', 'Apps\PesanTerbacaController@hitungPesan');
+    Route::resource('semuagpesan', 'Apps\PesanTerbacaController');
+    
 });
 
 Route::group(['middleware' => 'jwt.auth'], function () {
