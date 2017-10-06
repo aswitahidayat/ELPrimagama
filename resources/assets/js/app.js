@@ -22,8 +22,7 @@ import toastr from 'toastr'
 import App from './App.vue';
 import router from './router';
 import LoadingBar from './components/LoadingBar';
-import Pagination from './components/Pagination'
-
+import Pagination from './components/Pagination';
 
 Vue.component('App', require('./App.vue'));
 Vue.component('toastr', require('toastr'));

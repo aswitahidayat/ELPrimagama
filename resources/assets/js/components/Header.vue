@@ -31,7 +31,7 @@
                 </li>
                 <dropdown size="nav" class="nav-item">
                     <span slot="button">
-                        <img src="static/img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
+                        <img src="/static/img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
                         <span class="hidden-md-down">admin</span>
                     </span>
                     <div slot="dropdown-menu" class="dropdown-menu dropdown-menu-right">
@@ -75,8 +75,7 @@
                     <tbody>
                         <tr v-for="(task, index) in list.data" :key="index">
                             <td>
-                                <strong>{{ task.judul }}</strong> <br/>
-                                {{ task.tanggal }} <br/>
+                                <strong>{{ task.judul }}</strong> <br/> {{ task.tanggal }} <br/>
                                 <p>{{ task.keterangan }}</p>
                                 <button type="button" class="btn btn-primary" @click="popUpEditKalpen(task.RecID)">
                                     <i class="fa fa-edit"></i>
@@ -127,8 +126,10 @@ export default {
 
     created() {
         var vm = this;
+        vm.setTheInterval();
 
         EventBus.$on('hitungUlangPesan', function() {
+            debugger;
             vm.hitungPesan();
         }),
             vm.hitungPesan();
@@ -147,7 +148,7 @@ export default {
             document.body.classList.toggle('sidebar-mobile-show')
         },
         fetchPesanList(page) {
-            axios.get('api/semuagpesan')
+            axios.get('/api/semuagpesan')
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -155,16 +156,39 @@ export default {
                 .catch((err) => console.error(err));
         },
         hitungPesan() {
-            axios.get('api/hitungpesan')
+            axios.get('/api/hitungpesan')
                 .then((res) => {
                     this.jumlahPesan = res.data;
                 })
                 .catch((err) => console.error(err));
         },
+
+        //         for (var i = 0; i < 10; i++) {
+        //      setTheInterval(i);
+        //  },
+
+        setTheInterval() {
+            setInterval(function() {
+                this.hitungPesan();
+            }.bind(this), 10000);
+        }
+
         // asideToggle (e) {
         //   e.preventDefault()
         //   document.body.classList.toggle('aside-menu-hidden')
         // }
+    },
+
+    ready: function() {
+        // this.hitungPesan();
+
+        setInterval(function() {
+            this.hitungPesan();
+        }.bind(this), 3);
+
+        setInterval(function() {
+            console.log(i);
+        }, 3000);
     }
 }
 </script>

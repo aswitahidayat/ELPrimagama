@@ -223,7 +223,7 @@ export default {
 
         fetchPikseList(page) {
             this.ready = false;
-            axios.get('api/pikse?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/pikse?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -234,7 +234,7 @@ export default {
 
         popUpEditPikse(id) {
             this.ready = false;
-            axios.get('api/pikse/' + id)
+            axios.get('/api/pikse/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -256,7 +256,7 @@ export default {
         editPikse(id) {
             this.ready = false;
             if (id && id !== "") {
-                axios.put('api/pikse/' + id, this.dataForm)
+                axios.put('/api/pikse/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -266,7 +266,7 @@ export default {
                     })
                     .catch((err) => console.error(err));
             } else {
-                axios.post('api/pikse', this.dataForm)
+                axios.post('/api/pikse', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -280,7 +280,7 @@ export default {
 
         deletePikse(id) {
             this.ready = false;
-            axios.delete('api/pikse/' + id)
+            axios.delete('/api/pikse/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.dataForm = {};
@@ -293,7 +293,7 @@ export default {
 
         getJenjang() {
             this.ready = false;
-            axios.get('api/jenjang/')
+            axios.get('/api/jenjang/')
                 .then((res) => {
                     this.listJenjang = res.data;
                     this.ready = true;
@@ -303,7 +303,7 @@ export default {
 
         getKurikulum() {
             this.ready = false;
-            axios.get('api/kurikulum/')
+            axios.get('/api/kurikulum/')
                 .then((res) => {
                     this.listKurikulum = res.data;
                     this.ready = true;

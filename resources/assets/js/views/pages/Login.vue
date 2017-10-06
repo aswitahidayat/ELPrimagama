@@ -57,7 +57,7 @@ export default {
     methods: {
         login() {
             this.ready = false;
-            axios.post('api/login', this.dataForm)
+            axios.post('/api/login', this.dataForm)
                 .then((res) => {
                     this.primaryModal = false;
                     this.dataForm = {};

@@ -34,9 +34,9 @@ import SemuaPesan from '../views/modules/master/SemuaPesan';
 Vue.use(Router);
 
 export default new Router({
-  mode: 'hash', // hash or hash = Demo is living in GitHub.io, so required!
+  mode: 'history', // hash or hash = Demo is living in GitHub.io, so required!
   linkActiveClass: 'open active',
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior,
   routes: [
     {
       path: '/',
@@ -159,3 +159,22 @@ export default new Router({
     },
   ]
 });
+
+function scrollBehavior (to, from, savedPosition) {
+  if (savedPosition) {
+    return savedPosition
+  }
+
+  const position = {}
+
+  if (to.hash) {
+    position.selector = to.hash
+  }
+
+  if (to.matched.some(m => m.meta.scrollToTop)) {
+    position.x = 0
+    position.y = 0
+  }
+
+  return position
+}

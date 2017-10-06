@@ -197,7 +197,7 @@ export default {
 
         fetchKalpenList(page) {
             this.ready = false;
-            axios.get('api/kalpen?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/kalpen?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -207,7 +207,7 @@ export default {
         },
 
         popUpEditKalpen(RecID) {
-            axios.get('api/kalpen/' + RecID)
+            axios.get('/api/kalpen/' + RecID)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -228,7 +228,7 @@ export default {
         editKalpen(RecID) {
             this.ready = false;
             if (RecID && RecID !== "") {
-                axios.put('api/kalpen/' + RecID, this.dataForm)
+                axios.put('/api/kalpen/' + RecID, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -238,7 +238,7 @@ export default {
                     })
                     .catch((err) => console.error(err));
             } else {
-                axios.post('api/kalpen', this.dataForm)
+                axios.post('/api/kalpen', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -252,7 +252,7 @@ export default {
 
         deleteKalpen(RecID) {
             this.ready = false;
-            axios.delete('api/kalpen/' + RecID)
+            axios.delete('/api/kalpen/' + RecID)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;

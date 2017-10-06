@@ -187,7 +187,7 @@ export default {
 
         fetchKetelaList(page) {
             this.ready = false;
-            axios.get('api/ketela?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/ketela?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -198,7 +198,7 @@ export default {
 
         createKetela() {
             this.ready = false;
-            axios.post('api/ketela', this.dataForm)
+            axios.post('/api/ketela', this.dataForm)
                 .then((res) => {
                     this.dataForm = {};
                     this.fetchKetelaList();
@@ -209,7 +209,7 @@ export default {
 
         popUpEditKetela(id) {
             this.ready = false;
-            axios.get('api/ketela/' + id)
+            axios.get('/api/ketela/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -231,7 +231,7 @@ export default {
         editKetela(id) {
             this.ready = false;
             if (id && id !== "") {
-                axios.put('api/ketela/' + id, this.dataForm)
+                axios.put('/api/ketela/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.fetchKetelaList();
@@ -240,7 +240,7 @@ export default {
                     })
                     .catch((err) => console.error(err));
             } else {
-                axios.post('api/ketela', this.dataForm)
+                axios.post('/api/ketela', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.fetchKetelaList();
@@ -258,7 +258,7 @@ export default {
 
         deleteKetela(id) {
             this.ready = false;
-            axios.delete('api/ketela/' + id)
+            axios.delete('/api/ketela/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.fetchKetelaList();

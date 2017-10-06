@@ -187,7 +187,7 @@ export default {
         },
         fetchBannerList(page) {
             this.ready = false;
-            axios.get('api/banner?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/banner?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -198,7 +198,7 @@ export default {
 
         popUpEditBanner(id) {
             this.ready = false;
-            axios.get('api/banner/' + id)
+            axios.get('/api/banner/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -220,7 +220,7 @@ export default {
         editBanner(id) {
             this.ready = false;
             if (id && id !== "") {
-                axios.put('api/banner/' + id, this.dataForm)
+                axios.put('/api/banner/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -230,7 +230,7 @@ export default {
                     })
                     .catch((err) => console.error(err));
             } else {
-                axios.post('api/banner', this.dataForm)
+                axios.post('/api/banner', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -246,7 +246,7 @@ export default {
 
         deleteBanner(id) {
             this.ready = false;
-            axios.delete('api/banner/' + id)
+            axios.delete('/api/banner/' + id)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;

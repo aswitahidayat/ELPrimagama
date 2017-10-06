@@ -141,7 +141,7 @@ export default {
 
         fetchPesanList(page) {
             this.ready = false;
-            axios.get('api/semuagpesan?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/semuagpesan?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -153,7 +153,7 @@ export default {
         popupPesan(task) {
             if (!task.id_berita) {
                 this.ready = false;
-                axios.post('api/semuagpesan', task)
+                axios.post('/api/semuagpesan', task)
                     .then((res) => {
                         this.ready = true;
                     })
@@ -165,7 +165,7 @@ export default {
 
         deletePesan(id) {
             this.ready = false;
-            axios.delete('api/pesan/' + id)
+            axios.delete('/api/pesan/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.fetchPesanList();
@@ -178,7 +178,7 @@ export default {
 
         getUser() {
             this.ready = false;
-            axios.get('api/user/')
+            axios.get('/api/user/')
                 .then((res) => {
                     this.ready = true;
                     this.listUser = res.data;

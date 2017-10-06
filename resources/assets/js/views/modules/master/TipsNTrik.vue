@@ -185,7 +185,7 @@ export default {
 
         fetchMititiList(page) {
             this.ready = false;
-            axios.get('api/mititi?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/mititi?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -196,7 +196,7 @@ export default {
 
         popUpEditMititi(id) {
             this.ready = false;
-            axios.get('api/mititi/' + id)
+            axios.get('/api/mititi/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -218,7 +218,7 @@ export default {
         editMititi(id) {
             this.ready = false;
             if (id && id !== "") {
-                axios.put('api/mititi/' + id, this.dataForm)
+                axios.put('/api/mititi/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -229,7 +229,7 @@ export default {
                     .catch((err) => console.error(err));
             } else {
                 this.ready = false;
-                axios.post('api/mititi', this.dataForm)
+                axios.post('/api/mititi', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -245,7 +245,7 @@ export default {
 
         deleteMititi(id) {
             this.ready = false;
-            axios.delete('api/mititi/' + id)
+            axios.delete('/api/mititi/' + id)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;

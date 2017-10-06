@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Tips N Trik Table
+                    <i class="fa fa-align-justify"></i> Pesan Table
                 </div>
                 <div class="card-block">
                     <div class="row">
@@ -58,9 +58,9 @@
 
             <div class="card-block">
                 <div class="form-group">
-                    <label>File</label>
-                    <input name="nama" type="text" class="form-control" v-validate="'required'" v-model="dataForm.Judul" value="{ dataForm.judul }" placeholder="Masukan Nama File" maxlength="50">
-                    <span v-show="errors.has('nama')" class="help-block">nama diperlukan</span>
+                    <label>Judul</label>
+                    <input name="judul" type="text" class="form-control" v-validate="'required'" v-model="dataForm.Judul" value="{ dataForm.judul }" placeholder="Masukan Judul" maxlength="50">
+                    <span v-show="errors.has('judul')" class="help-block">judul diperlukan</span>
                 </div>
 
                 <div class="form-group">
@@ -203,7 +203,7 @@ export default {
 
         fetchPesanList(page) {
             this.ready = false;
-            axios.get('api/pesan?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/pesan?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -214,7 +214,7 @@ export default {
 
         popUpEditPesan(id) {
             this.ready = false;
-            axios.get('api/pesan/' + id)
+            axios.get('/api/pesan/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -239,7 +239,7 @@ export default {
         editPesan(id) {
             this.ready = false;
             if (id && id !== "") {
-                axios.put('api/pesan/' + id, this.dataForm)
+                axios.put('/api/pesan/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.fetchPesanList();
@@ -251,7 +251,7 @@ export default {
                     .catch((err) => console.error(err));
             } else {
                 this.ready = false;
-                axios.post('api/pesan', this.dataForm)
+                axios.post('/api/pesan', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.fetchPesanList();
@@ -268,7 +268,7 @@ export default {
 
         deletePesan(id) {
             this.ready = false;
-            axios.delete('api/pesan/' + id)
+            axios.delete('/api/pesan/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.fetchPesanList();
@@ -281,7 +281,7 @@ export default {
 
         getUser() {
             this.ready = false;
-            axios.get('api/user/')
+            axios.get('/api/user/')
                 .then((res) => {
                     this.ready = true;
                     this.listUser = res.data;

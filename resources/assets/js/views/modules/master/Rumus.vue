@@ -182,7 +182,7 @@ export default {
         
         fetchRumusList(page) {
             this.ready = false;
-            axios.get('api/rumus?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/rumus?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -193,7 +193,7 @@ export default {
 
         popUpEditRumus(id) {
             this.ready = false;
-            axios.get('api/rumus/' + id)
+            axios.get('/api/rumus/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -215,7 +215,7 @@ export default {
         editRumus(id) {
             this.ready = false;
             if (id && id !== "") {
-                axios.put('api/rumus/' + id, this.dataForm)
+                axios.put('/api/rumus/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -225,7 +225,7 @@ export default {
                     })
                     .catch((err) => console.error(err));
             } else {
-                axios.post('api/rumus', this.dataForm)
+                axios.post('/api/rumus', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -239,7 +239,7 @@ export default {
 
         deleteRumus(id) {
             this.ready = false;
-            axios.delete('api/rumus/' + id)
+            axios.delete('/api/rumus/' + id)
                 .then((res) => {
                     this.dataForm = {};
                     this.deleteModal = false;

@@ -156,7 +156,7 @@ export default {
     methods: {
         fetchSekolahList(page) {
             this.ready = false;
-            axios.get('api/sekolah?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/sekolah?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -167,7 +167,7 @@ export default {
 
         popUpEditSekolah(id) {
             this.ready = false;
-            axios.get('api/sekolah/' + id)
+            axios.get('/api/sekolah/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -189,7 +189,7 @@ export default {
         editSekolah(id) {
             this.ready = false;
             if (id && id !== "") {
-                axios.put('api/sekolah/' + id, this.dataForm)
+                axios.put('/api/sekolah/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -199,7 +199,7 @@ export default {
                     })
                     .catch((err) => console.error(err));
             } else {
-                axios.post('api/sekolah', this.dataForm)
+                axios.post('/api/sekolah', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -213,7 +213,7 @@ export default {
 
         deleteSekolah(id) {
             this.ready = false;
-            axios.delete('api/sekolah/' + id)
+            axios.delete('/api/sekolah/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.dataForm = {};
@@ -226,7 +226,7 @@ export default {
 
         getPropinsi() {
             this.ready = false;
-            axios.get('api/propinsi/')
+            axios.get('/api/propinsi/')
                 .then((res) => {
                     this.listPropinsi = res.data;
                     this.ready = true;
@@ -236,7 +236,7 @@ export default {
 
         getKota() {
             this.ready = false;
-            axios.get('api/kota?propinsi=' + this.dataForm.propinsi)
+            axios.get('/api/kota?propinsi=' + this.dataForm.propinsi)
                 .then((res) => {
                     this.listKota = res.data;
                     this.ready = true;

@@ -226,7 +226,7 @@ export default {
 
         fetchSmartexerciseList(page) {
             this.ready = false;
-            axios.get('api/smartexercise?page=' + page + '&keyword=' + this.keyword)
+            axios.get('/api/smartexercise?page=' + page + '&keyword=' + this.keyword)
                 .then((res) => {
                     this.list = res.data;
                     this.pagination = res.data.pagination;
@@ -237,7 +237,7 @@ export default {
 
         popUpEditSmartexercise(id) {
             this.ready = false;
-            axios.get('api/smartexercise/' + id)
+            axios.get('/api/smartexercise/' + id)
                 .then((res) => {
                     this.primaryModal = true;
                     this.dataForm = res.data;
@@ -259,7 +259,7 @@ export default {
         editSmartexercise(id) {
             this.ready = false;
             if (id && id !== "") {
-                axios.put('api/smartexercise/' + id, this.dataForm)
+                axios.put('/api/smartexercise/' + id, this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -269,7 +269,7 @@ export default {
                     })
                     .catch((err) => console.error(err));
             } else {
-                axios.post('api/smartexercise', this.dataForm)
+                axios.post('/api/smartexercise', this.dataForm)
                     .then((res) => {
                         this.primaryModal = false;
                         this.dataForm = {};
@@ -283,7 +283,7 @@ export default {
 
         deleteSmartexercise(id) {
             this.ready = false;
-            axios.delete('api/smartexercise/' + id)
+            axios.delete('/api/smartexercise/' + id)
                 .then((res) => {
                     this.deleteModal = false;
                     this.dataForm = {};
@@ -296,7 +296,7 @@ export default {
 
         getJenjang() {
             this.ready = false;
-            axios.get('api/jenjang/')
+            axios.get('/api/jenjang/')
                 .then((res) => {
                     this.listJenjang = res.data;
                     this.ready = true;
@@ -306,7 +306,7 @@ export default {
 
         getKurikulum() {
             this.ready = false;
-            axios.get('api/kurikulum/')
+            axios.get('/api/kurikulum/')
                 .then((res) => {
                     this.listKurikulum = res.data;
                     this.ready = true;

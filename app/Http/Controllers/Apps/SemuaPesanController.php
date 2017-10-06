@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Apps;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Pesan;
-use App\Models\PesanTerbaca;
+use App\Models\SemuaPesan;
 
-class PesanTerbacaController extends Controller
+class SemuaPesanController extends Controller
 {
     /**
      *
