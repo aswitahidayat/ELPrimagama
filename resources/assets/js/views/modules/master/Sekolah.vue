@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Asal Sekolah Table
+                    <i class="icon-graduation"></i> Asal Sekolah
                 </div>
                 <div class="card-block">
                     <div class="row">

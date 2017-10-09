@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Banner Table
+                    <i class="icon-picture"></i> Banner
                 </div>
                 <div class="card-block">
                     <div class="row">

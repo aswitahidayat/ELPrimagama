@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Rumus Table
+                    <i class="icon-calculator"></i> Rumus
                 </div>
                 <div class="card-block">
                     <div class="row">

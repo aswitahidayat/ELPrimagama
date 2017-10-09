@@ -4,5 +4,5 @@
   line-height: $footer-height;
   color: $footer-color;
   background: $footer-bg;
-  @include borders($footer-borders);
+  //@include borders($footer-borders);
 }

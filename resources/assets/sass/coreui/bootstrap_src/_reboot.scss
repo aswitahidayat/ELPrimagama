@@ -80,7 +80,7 @@ body {
   // Go easy on the eyes and use something other than `#000` for text
   color: $body-color;
   // By default, `<body>` has no `background-color` so we set one as a best practice.
-  background-color: $body-bg;
+  background: url('../images/wall.jpg') center top no-repeat fixed #000000;  
 }
 
 // Suppress the focus outline on elements that cannot be accessed via keyboard.

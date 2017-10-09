@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Smart Exercise Table
+                    <i class="icon-hourglass"></i> Smart Exercise
                 </div>
                 <div class="card-block">
                     <div class="row">

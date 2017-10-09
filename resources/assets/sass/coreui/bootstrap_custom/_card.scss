@@ -3,7 +3,8 @@
 }
 
 .card-header {
-
+  background-color: $card-head-bg;
+  color: $card-head-color;
   i.icon-bg {
     display: inline-block;
     padding: $card-spacer-y $card-spacer-x !important;

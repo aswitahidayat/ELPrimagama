@@ -1,6 +1,26 @@
 // Here you can add other styles
 
 @import "toastr";
+@import "login";
+@import "custom-bootstrap-margin-padding";
+@import "lightslider";
+@import "slicknav";
+
 .action-td {
     min-width: 130px;
+}
+.datepicker{
+    display: block !important;
+}
+
+.btn-primary, .pagination li.active a{
+    background-color: $main-color;
+}
+
+.btn-danger {
+    background-color: #f53231;
+}
+
+.btn-danger:hover{
+    background-color: #f63c3a;
 }

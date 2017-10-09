@@ -64,6 +64,7 @@
   .nav {
     @include sidebar-width($sidebar-borders, $sidebar-width);
     flex-direction: column !important;
+    padding-bottom: 20px;
 
     .nav-title {
       padding: $sidebar-nav-title-padding-y $sidebar-nav-title-padding-x;
