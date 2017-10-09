@@ -23,6 +23,7 @@ import App from './App.vue';
 import router from './router';
 import LoadingBar from './components/LoadingBar';
 import Pagination from './components/Pagination';
+import VueCarousel from 'vue-carousel';
 
 Vue.component('App', require('./App.vue'));
 Vue.component('toastr', require('toastr'));
@@ -30,6 +31,7 @@ Vue.component('LoadingBar', require('./components/LoadingBar'));
 Vue.component('Pagination', require('./components/Pagination'));
 
 Vue.use(VeeValidate);
+Vue.use(VueCarousel);
 
 /* eslint-disable no-new */
 const app = new Vue({
