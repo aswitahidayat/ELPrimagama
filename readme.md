@@ -6,7 +6,6 @@
 "><img src="https://scrutinizer-ci.com/g/aswitahidayat/ELPrimagama/badges/quality-score.png?b=master" alt="Build Status"></a>
 <a href="https://scrutinizer-ci.com/g/aswitahidayat/ELPrimagama/
 "><img src="https://scrutinizer-ci.com/g/aswitahidayat/ELPrimagama/badges/build.png?b=master" alt="Build Status"></a>
-<a href="https://scrutinizer-ci.com/g/aswitahidayat/ELPrimagama/"><img src="http://img.shields.io/scrutinizer/g/deployphp/deployer.svg?style=flat" alt="Code Quality"></a>
 
 
 # Laravel 5.4 + CoreUI Admin Bootstrap Template VueJS
